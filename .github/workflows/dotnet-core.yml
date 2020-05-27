@@ -21,6 +21,6 @@ jobs:
     - name: Install dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build ../../src/ReceFacil.Portal/RecebaFacil.Portal.csproj --configuration Release --no-restore
+      run: dotnet build RecebaFacil.Portal.csproj --configuration Release --no-restore
     - name: Test
-      run: dotnet test ../../src/ReceFacil.Portal/RecebaFacil.Tests.csproj --no-restore --verbosity normal
+      run: dotnet test RecebaFacil.Tests.csproj --no-restore --verbosity normal
