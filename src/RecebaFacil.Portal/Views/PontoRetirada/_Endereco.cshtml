@@ -1,0 +1,62 @@
+﻿@model RecebaFacil.Portal.Models.PontoRetirada.MeuEnderecoViewModel
+
+<div class="row">
+    <div class="col-12 mt-3 mb-3 text-center">
+        <h3>Endereço cadastrado</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <p>
+            <label>CEP</label>
+            @Model.Cep
+        </p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <p>
+            <label>Logradouro:</label>
+            @Model.Logradouro
+        </p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <p>
+            <label>Bairro:</label>
+            @Model.Bairro
+        </p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <p>
+            <div class="d-inline-block">
+                <label>Municipio:</label>
+                @Model.Municipio
+            </div>
+            <div class="d-inline-block">
+                <label>UF</label>
+                @Model.Uf
+            </div>
+        </p>
+    </div>
+</div>
+@if (!string.IsNullOrWhiteSpace(Model.Observacao))
+{
+    <div class="row">
+        <div class="col-12">
+            <p>
+                <label>Observações:</label>
+                @Model.Observacao
+            </p>
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-12 text-center">
+        <p>Entre em contato <a asp-route="Home_Suporte">conosco</a> para alterar o endereço cadastrado</p>
+    </div>
+</div>

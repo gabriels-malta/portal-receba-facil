@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "RecebaFacil.Tests": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

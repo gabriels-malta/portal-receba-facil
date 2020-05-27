@@ -1,0 +1,54 @@
+﻿@model RecebaFacil.Portal.Models.Auth.LogonViewModel
+@{
+    Layout = null;
+}
+
+
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Portal Receba Fácil">
+    <meta name="author" content="Receba Fácil">
+    <link rel="icon" href="~/favicon.ico">
+
+    <title>Portal Receba Fácil</title>
+
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/signin.css" rel="stylesheet" />
+    <style>
+        ul {
+            list-style: none;
+        }
+    </style>
+</head>
+
+<body class="text-center">
+    <form class="form-signin" method="post" asp-route="Auth_Autenticar" asp-antiforgery="true">
+        <img class="mb-4" src="~/image/receba-facil.png" alt="logotipo receba fácil" />
+        <h1 class="h3 mb-3 font-weight-normal">
+            Receba Fácil
+        </h1>
+        <label asp-for="LoginName" class="sr-only">Email</label>
+        <input type="text" asp-for="LoginName" class="form-control" placeholder="Usuário" required autofocus />
+        <span asp-validation-for="LoginName" class="text-danger"></span>
+        <label asp-for="Senha" class="sr-only">Senha</label>
+        <input type="password" asp-for="Senha" class="form-control" placeholder="Senha" required />
+        <span class="text-danger" asp-validation-for="Senha"></span>
+        <div class="checkbox mb-3">
+            <label>
+                <input type="checkbox" value="remember-me"> Lembrar de mim
+            </label>
+        </div>
+        <div asp-validation-summary="ModelOnly" class="bg-warning">
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Entrar</button>
+        <div class="row">
+            <div class="col-12">
+                <a class="btn btn-link" asp-route="Auth_PreRegistro">Não tem cadastro?</a>
+            </div>
+        </div>
+    </form>
+</body>
+</html>
