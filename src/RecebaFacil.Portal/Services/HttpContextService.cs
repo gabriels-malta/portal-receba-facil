@@ -33,7 +33,7 @@ namespace RecebaFacil.Portal.Services
 
         public async Task SignIn(int usuarioId)
         {
-            Usuario usuario = _usuarioService.BuscarPorId(usuarioId);
+            Usuario usuario = _usuarioService.ObterPorId(usuarioId);
             string encryptedUsuarioId = _securityService.EncryptValue(usuario.Id);
 
             IEnumerable<Claim> claims = new List<Claim>() {
