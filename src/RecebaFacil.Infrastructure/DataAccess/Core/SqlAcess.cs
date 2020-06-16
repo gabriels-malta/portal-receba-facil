@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System.Data;
+using RecebaFacil.Infrastructure.Mapper;
 using System.Data.SqlClient;
 
 namespace RecebaFacil.Infrastructure.DataAccess.Core
@@ -8,24 +8,10 @@ namespace RecebaFacil.Infrastructure.DataAccess.Core
     {
         private readonly string _connectionString;
 
-        public SqlAcess(IConfiguration configuration)
+        public SqlAcess(IConfiguration configuration, FluentMapperCofiguration mapperCofiguration)
         {
             _connectionString = configuration.GetConnectionString("JupiterConnection");
-        }
-
-        public SqlDataAdapter CreateAdapter(SqlCommand command)
-        {
-            return new SqlDataAdapter(command);
-        }
-
-        public SqlCommand CreateCommand(string commandText, CommandType type, SqlConnection connection)
-        {
-            return new SqlCommand
-            {
-                CommandText = commandText,
-                CommandType = type,
-                Connection = connection
-            };
+            mapperCofiguration.Initialize();
         }
 
         public SqlConnection CreateConnection()

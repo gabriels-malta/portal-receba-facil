@@ -3,8 +3,9 @@ using RecebaFacil.Domain.Entities;
 
 namespace RecebaFacil.Domain.Services
 {
-    public interface IContatoService : IServiceBase<Contato, int>
+    public interface IContatoService
     {
-        Contato BuscarPorId(int id, bool carregarEmpresa);
+        Contato ObterPorId(int id);
+        Contato ObterPorId(int id, bool carregarEmpresa);
     }
 }

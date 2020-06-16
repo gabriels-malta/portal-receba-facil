@@ -1,4 +1,9 @@
-﻿namespace RecebaFacil.Domain.DataServices
+﻿using RecebaFacil.Domain.Entities;
+
+namespace RecebaFacil.Domain.DataServices
 {
-    public interface IDataServiceGrupo : IDataServiceBase<short> { }
+    public interface IDataServiceGrupo
+    {
+        Grupo ObterPorId(short id);
+    }
 }

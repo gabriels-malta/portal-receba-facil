@@ -1,22 +1,18 @@
 ﻿using RecebaFacil.Domain.DataServices;
+using RecebaFacil.Domain.Entities;
 using RecebaFacil.Infrastructure.DataAccess.Core;
-using System.Data;
-using System.Data.SqlClient;
 
 namespace RecebaFacil.Infrastructure.DataAccess
 {
-    public class DataServiceGrupo : RepositoryBase, IDataServiceGrupo
+    public class DataServiceGrupo : RepositoryBase<Grupo>, IDataServiceGrupo
     {
         public DataServiceGrupo(ISqlAccess sqlAccess)
             : base(sqlAccess)
         { }
 
-        public DataSet ObterPorId(short id)
+        public Grupo ObterPorId(short id)
         {
-            return ExecuteCommand("sproc_Grupo_ObterPorId", new SqlParameter[]
-                {
-                    new SqlParameter("@id", DbType.Int16) { Value = id }
-                });
+            return ExecuteToFirstOrDefault("sproc_Grupo_ObterPorId", new { id });
         }
     }
 }

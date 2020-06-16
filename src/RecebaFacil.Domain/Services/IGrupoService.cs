@@ -2,7 +2,8 @@
 
 namespace RecebaFacil.Domain.Services
 {
-    public interface IGrupoService : IServiceBase<Grupo, short>
+    public interface IGrupoService
     {
+        Grupo ObterPorId(short id);
     }
 }

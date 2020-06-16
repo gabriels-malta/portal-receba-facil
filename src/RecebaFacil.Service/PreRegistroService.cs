@@ -1,7 +1,6 @@
 ﻿using RecebaFacil.Domain.DataServices;
 using RecebaFacil.Domain.Entities;
 using RecebaFacil.Domain.Services;
-using System;
 
 namespace RecebaFacil.Service
 {
@@ -13,8 +12,6 @@ namespace RecebaFacil.Service
         {
             _PreRegistroService = preRegistroService;
         }
-
-        public PreRegistro BuscarPorId(Guid id) { throw new NotImplementedException(); }
 
         public int Salvar(PreRegistro entity)
         {

@@ -1,90 +1,38 @@
-﻿using RecebaFacil.Infrastructure.DataAccess.Core;
-using System;
+﻿using Dapper;
+using RecebaFacil.Infrastructure.DataAccess.Core;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
 namespace RecebaFacil.Infrastructure.DataAccess
 {
-    public abstract class RepositoryBase
+    public abstract class RepositoryBase<T>
     {
-        private readonly ISqlAccess _sqlAcess;
+        private readonly SqlConnection _connection;
 
         protected RepositoryBase(ISqlAccess databaseHandler)
         {
-            _sqlAcess = databaseHandler;
+            _connection = databaseHandler.CreateConnection();
         }
 
-        public DataSet ExecuteCommand(string commandText, SqlParameter[] parameters)
+        protected IEnumerable<T> ExecuteToEnumerable(string commandText, object filter)
         {
-            using (SqlConnection connection = _sqlAcess.CreateConnection())
-            {
-                connection.Open();
-                using SqlCommand command = _sqlAcess.CreateCommand(commandText, CommandType.StoredProcedure, connection);
-                AddParametersToCommand(parameters, command);
-
-                DataSet dataSet = new DataSet();
-                SqlDataAdapter dataAdapter = _sqlAcess.CreateAdapter(command);
-                dataAdapter.Fill(dataSet);
-                return dataSet;
-            }
+            return _connection.Query<T>(commandText, filter, commandType: CommandType.StoredProcedure);
         }
 
-        public object ExecuteScalar(string commandText, SqlParameter[] parameters)
+        protected T ExecuteToFirstOrDefault(string commandText, object filter)
         {
-            object result = null;
-            using (SqlConnection connection = _sqlAcess.CreateConnection())
-            {
-                connection.Open();
-                using SqlCommand command = _sqlAcess.CreateCommand(commandText, CommandType.StoredProcedure, connection);
-                AddParametersToCommand(parameters, command);
-                try
-                {
-                    result = command.ExecuteScalar();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-            return result;
+            return _connection.QueryFirstOrDefault<T>(commandText, filter, commandType: CommandType.StoredProcedure);
         }
 
-        public int ExecuteNonQuery(string commandText, SqlParameter[] parameters)
+        protected int ExecuteNonQuery(string commandText, object entity)
         {
-            int rowcount = 0;
-            using (SqlConnection connection = _sqlAcess.CreateConnection())
-            {
-                connection.Open();
-                using SqlCommand command = _sqlAcess.CreateCommand(commandText, CommandType.StoredProcedure, connection);
-                AddParametersToCommand(parameters, command);
-
-                try
-                {
-                    rowcount = command.ExecuteNonQuery();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-            return rowcount;
+            return _connection.Execute(commandText, entity, commandType: CommandType.StoredProcedure);
         }
 
-        private static void AddParametersToCommand(SqlParameter[] parameters, SqlCommand command)
+        protected object ExecuteScalar(string commandText, object entity)
         {
-            if (parameters != null)
-            {
-                foreach (SqlParameter parameter in parameters)
-                    command.Parameters.Add(parameter);
-            }
+            return _connection.ExecuteScalar(commandText, entity, commandType: CommandType.StoredProcedure);
         }
     }
 }

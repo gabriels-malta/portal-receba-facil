@@ -1,57 +1,62 @@
-﻿using RecebaFacil.Domain.DataServices;
+﻿using Microsoft.Extensions.Logging;
+using RecebaFacil.Domain.DataServices;
 using RecebaFacil.Domain.Entities;
-using RecebaFacil.Domain.Mappers;
+using RecebaFacil.Domain.Exception;
 using RecebaFacil.Domain.Services;
 using System;
-using System.Data;
-using System.Linq;
 
 namespace RecebaFacil.Service
 {
     public class ContatoService : IContatoService
     {
         private readonly IDataServiceContato _DataServiceContato;
-        private readonly IContatoMapper _Mapper;
         private readonly IEmpresaService _EmpresaService;
+        private readonly ILogger<IContatoService> _logger;
 
         public ContatoService(IDataServiceContato dataServiceContato,
-                              IContatoMapper mapper,
-                              IEmpresaService empresaService)
+                              IEmpresaService empresaService, 
+                              ILogger<IContatoService> logger)
         {
             _DataServiceContato = dataServiceContato;
-            _Mapper = mapper;
             _EmpresaService = empresaService;
+            _logger = logger;
         }
 
-        public Contato BuscarPorId(int id)
+        public Contato ObterPorId(int id)
         {
-            using DataSet ds = _DataServiceContato.ObterPorId(id);
-            Contato contato = _Mapper.Map(ds.Tables[0].AsEnumerable()).FirstOrDefault();
+            try
+            {
+                Contato contato = _DataServiceContato.ObterPorId(id);
 
-            if (contato == null)
-                throw new Exception("Contato não encontrado");
+                if (contato == null)
+                    throw new RecebaFacilException("Contato não encontrado");
 
-            return contato;
+                return contato;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("ContatoService.ObterPorId", ex.Message);
+                    throw new RecebaFacilException("Contato não encontrado");
+            }
         }
 
-        public Contato BuscarPorId(int id, bool carregarEmpresa)
+        public Contato ObterPorId(int id, bool carregarEmpresa)
         {
-            Contato contato = BuscarPorId(id);
+            try
+            {
+                Contato contato = ObterPorId(id);
 
-            if (carregarEmpresa)
-                contato.AdicionarEmpresa(_EmpresaService.BuscarPorId(contato.EmpresaID));
+                if (carregarEmpresa)
+                    contato.AdicionarEmpresa(_EmpresaService.ObterPorId(contato.EmpresaID));
 
-            return contato;
+                return contato;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("ContatoService.ObterPorId", ex.Message);
+                throw new RecebaFacilException("Contato não encontrado");
+            }
         }
 
-        public int Excluir(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Salvar(Contato entity)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

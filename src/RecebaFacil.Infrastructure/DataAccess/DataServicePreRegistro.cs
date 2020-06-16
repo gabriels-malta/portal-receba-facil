@@ -2,37 +2,35 @@
 using RecebaFacil.Domain.Entities;
 using RecebaFacil.Infrastructure.DataAccess.Core;
 using System;
-using System.Data;
-using System.Data.SqlClient;
 
 namespace RecebaFacil.Infrastructure.DataAccess
 {
-    public class DataServicePreRegistro : RepositoryBase, IDataServicePreRegistro
+    public class DataServicePreRegistro : RepositoryBase<PreRegistro>, IDataServicePreRegistro
     {
-        public DataServicePreRegistro(ISqlAccess databaseHandler) 
+        public DataServicePreRegistro(ISqlAccess databaseHandler)
             : base(databaseHandler)
         {
         }
 
-        public DataSet ObterPorId(Guid id)
+        public PreRegistro ObterPorId(Guid id)
         {
             throw new NotImplementedException();
         }
 
         public int Salvar(PreRegistro registro)
         {
-            return ExecuteNonQuery("sproc_PreRegistro_Inserir", new SqlParameter[]
+            return ExecuteNonQuery("sproc_PreRegistro_Inserir", new
             {
-                new SqlParameter("@uniId", Guid.NewGuid()),
-                new SqlParameter("@vchNome", registro.Nome),
-                new SqlParameter("@vchEmail", registro.Email),
-                new SqlParameter("@vchTelefone", registro.Telefone),
-                new SqlParameter("@vchNomeEmpresa", registro.NomeEmpresa),
-                new SqlParameter("@vchCidade", registro.Cidade),
-                new SqlParameter("@vchEndereco", registro.Endereco),
-                new SqlParameter("@vchCnpj", registro.Cnpj),
-                new SqlParameter("@chMotivo", registro.Objetivo)
-            }); ;                  
+                uniId = Guid.NewGuid(),
+                vchNome = registro.Nome,
+                vchEmail = registro.Email,
+                vchTelefone = registro.Telefone,
+                vchNomeEmpresa = registro.NomeEmpresa,
+                vchCidade = registro.Cidade,
+                vchEndereco = registro.Endereco,
+                vchCnpj = registro.Cnpj,
+                chMotivo = registro.Objetivo
+            });
         }
     }
 }

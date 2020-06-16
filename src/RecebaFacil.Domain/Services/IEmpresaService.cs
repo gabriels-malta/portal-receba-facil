@@ -3,8 +3,9 @@ using RecebaFacil.Domain.Entities;
 
 namespace RecebaFacil.Domain.Services
 {
-    public interface IEmpresaService : IServiceBase<Empresa, int>
+    public interface IEmpresaService
     {
-        Empresa BuscarPorId(int id, bool carregarEndereco);
+        Empresa ObterPorId(int id);
+        Empresa ObterPorId(int id, bool carregarEndereco);
     }
 }

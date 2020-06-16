@@ -3,7 +3,7 @@ using RecebaFacil.Domain.Entities;
 
 namespace RecebaFacil.Domain.Services
 {
-    public interface IPreRegistroService : IServiceBase<PreRegistro, System.Guid>
+    public interface IPreRegistroService
     {
         int Salvar(PreRegistro preRegistro);
     }
