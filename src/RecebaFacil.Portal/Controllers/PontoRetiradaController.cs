@@ -56,7 +56,7 @@ namespace RecebaFacil.Portal.Controllers
         [Route("meu-perfil/usuario", Name = "PontoRetirada_Perfil")]
         public IActionResult Perfil()
         {
-            var empresa = _empresaService.BuscarPorId(_loggedUser.EmpresaId);
+            var empresa = _empresaService.ObterPorId(_loggedUser.EmpresaId);
             PerfilViewModel model = new PerfilViewModel
             {
                 RazaoSocial = empresa.RazaoSocial,
