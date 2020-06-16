@@ -19,6 +19,5 @@ namespace RecebaFacil.Domain.Entities
                 _role = Regex.Replace(value, " ", "_").ToUpper();
             }
         }
-
     }
 }

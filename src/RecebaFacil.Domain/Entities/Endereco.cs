@@ -2,6 +2,7 @@
 {
     public class Endereco : EntityBase<int>
     {
+        public Endereco() { }
         public Endereco(int enderecoId,
                         int empresaId,
                         string cep,

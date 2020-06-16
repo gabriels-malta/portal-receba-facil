@@ -1,4 +1,9 @@
-﻿namespace RecebaFacil.Domain.DataServices
+﻿using RecebaFacil.Domain.Entities;
+
+namespace RecebaFacil.Domain.DataServices
 {
-    public interface IDataServiceEmpresa : IDataServiceBase<int> { }
+    public interface IDataServiceEmpresa
+    {
+        Empresa ObterPorId(int id);
+    }
 }

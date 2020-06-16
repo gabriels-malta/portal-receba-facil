@@ -5,9 +5,10 @@ namespace RecebaFacil.Domain.Entities
 {
     public class Contato : EntityBase<int>
     {
+        private string _valor;
+
         public int EmpresaID { get; set; }
         public string Nome { get; set; }
-        private string _valor;
         public string Valor
         {
             get { return FormatarValor(); }
@@ -17,13 +18,11 @@ namespace RecebaFacil.Domain.Entities
         public bool Ativo { get; set; }
 
         public virtual Empresa Empresa { get; private set; }
-
         public Contato AdicionarEmpresa(Empresa empresa)
         {
             Empresa = empresa;
             return this;
         }
-
         private string FormatarValor()
         {
             switch (TipoContato)

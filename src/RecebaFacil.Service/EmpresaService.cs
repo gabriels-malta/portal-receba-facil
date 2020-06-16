@@ -1,41 +1,61 @@
-﻿using RecebaFacil.Domain.DataServices;
+﻿using Microsoft.Extensions.Logging;
+using RecebaFacil.Domain.DataServices;
 using RecebaFacil.Domain.Entities;
-using RecebaFacil.Domain.Mappers;
+using RecebaFacil.Domain.Exception;
 using RecebaFacil.Domain.Services;
-using System.Data;
-using System.Linq;
+using System;
 
 namespace RecebaFacil.Service
 {
     public class EmpresaService : IEmpresaService
     {
         private readonly IDataServiceEmpresa _DataServiceEmpresa;
-        private readonly IEmpresaMapper _EmpresaMapper;
         private readonly IEnderedecoService _EnderecoService;
+        private readonly ILogger<IEmpresaService> _logger;
 
         public EmpresaService(IDataServiceEmpresa dataServiceEmpresa,
-                              IEmpresaMapper empresaMapper, 
-                              IEnderedecoService enderecoService)
+                              IEnderedecoService enderecoService,
+                              ILogger<IEmpresaService> logger)
         {
             _DataServiceEmpresa = dataServiceEmpresa;
-            _EmpresaMapper = empresaMapper;
             _EnderecoService = enderecoService;
+            _logger = logger;
         }
 
-        public Empresa BuscarPorId(int id)
+        public Empresa ObterPorId(int id)
         {
-            using DataSet ds = _DataServiceEmpresa.ObterPorId(id);
-            return _EmpresaMapper.Map(ds.Tables[0].AsEnumerable()).FirstOrDefault();
+            try
+            {
+                Empresa empresa = _DataServiceEmpresa.ObterPorId(id);
+
+                if (empresa == null)
+                    throw new RecebaFacilException("Empresa não encontrada");
+
+                return empresa;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("EmpresaService.ObterPorId", ex.Message);
+                throw new RecebaFacilException("Empresa não encontrada");
+            }
         }
 
-        public Empresa BuscarPorId(int id, bool carregarEndereco)
+        public Empresa ObterPorId(int id, bool carregarEndereco)
         {
-            Empresa empresa = BuscarPorId(id);
+            try
+            {
+                Empresa empresa = ObterPorId(id);
 
-            if(carregarEndereco)
-                empresa.AdicionarEndereco(_EnderecoService.ObterPorEmpresa(empresaId: id));
+                if (carregarEndereco)
+                    empresa.AdicionarEndereco(_EnderecoService.ObterPorEmpresa(empresaId: id));
 
-            return empresa;
+                return empresa;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("EmpresaService.ObterPorId", ex.Message);
+                throw new RecebaFacilException("Empresa não encontrada");
+            }
         }
     }
 }

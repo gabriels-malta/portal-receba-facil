@@ -1,11 +1,11 @@
 ﻿using RecebaFacil.Domain.Entities;
-using System.Data;
 
 namespace RecebaFacil.Domain.DataServices
 {
-    public interface IDataServiceEndereco : IDataServiceBase<int>
+    public interface IDataServiceEndereco
     {
-        DataSet ObterEnderecoPorEmpresa(int empresaId, bool somentePrincipal); 
+        Endereco ObterPorId(int id);
+        Endereco ObterEnderecoPorEmpresa(int empresaId, bool somentePrincipal); 
         int Salvar(Endereco endereco);
     }
 }

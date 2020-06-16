@@ -1,36 +1,48 @@
-﻿using RecebaFacil.Domain.DataServices;
+﻿using Microsoft.Extensions.Logging;
+using RecebaFacil.Domain.DataServices;
 using RecebaFacil.Domain.Entities;
 using RecebaFacil.Domain.Exception;
-using RecebaFacil.Domain.Mappers;
 using RecebaFacil.Domain.Services;
 using System;
-using System.Data;
-using System.Linq;
 
 namespace RecebaFacil.Service
 {
     public class EnderecoService : IEnderedecoService
     {
         private readonly IDataServiceEndereco _DataServiceEndereco;
-        private readonly IEnderecoMapper _EnderecoMapper;
+        private readonly ILogger<IEnderedecoService> _logger;
 
-        public EnderecoService(IDataServiceEndereco dataServiceEndereco,
-                               IEnderecoMapper enderecoMapper)
+        public EnderecoService(IDataServiceEndereco dataServiceEndereco, 
+            ILogger<IEnderedecoService> logger)
         {
             _DataServiceEndereco = dataServiceEndereco;
-            _EnderecoMapper = enderecoMapper;
+            _logger = logger;
         }
 
-        public Endereco BuscarPorId(int id)
+        public Endereco ObterPorId(int id)
         {
-            using DataSet ds = _DataServiceEndereco.ObterPorId(id);
-            return _EnderecoMapper.Map(ds.Tables[0].AsEnumerable()).FirstOrDefault();
+            try
+            {
+                return _DataServiceEndereco.ObterPorId(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("EnderecoService.ObterPorId", ex.Message);
+                throw new RecebaFacilException("Endereço não encontrado");
+            }
         }
 
         public Endereco ObterPorEmpresa(int empresaId)
         {
-            using DataSet ds = _DataServiceEndereco.ObterEnderecoPorEmpresa(empresaId, somentePrincipal: true);
-            return _EnderecoMapper.Map(ds.Tables[0].AsEnumerable()).FirstOrDefault();
+            try
+            {
+                return _DataServiceEndereco.ObterEnderecoPorEmpresa(empresaId, somentePrincipal: true);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("EnderecoService.ObterPorEmpresa", ex.Message);
+                throw new RecebaFacilException("Endereço não encontrado");
+            }
         }
 
         public int Salvar(Endereco endereco)
@@ -50,7 +62,7 @@ namespace RecebaFacil.Service
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                _logger.LogError("EnderecoService.Salvar", ex.Message);
                 throw new RecebaFacilException("Erro ao salvar o endereço");
             }
         }

@@ -1,11 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using RecebaFacil.Domain.DataServices;
-using RecebaFacil.Domain.Mappers;
 using RecebaFacil.Domain.Services;
 using RecebaFacil.Infrastructure.DataAccess;
 using RecebaFacil.Infrastructure.DataAccess.Core;
+using RecebaFacil.Infrastructure.Mapper;
 using RecebaFacil.Service;
-using RecebaFacil.Service.Mappers;
 
 namespace RecebaFacil.IoC
 {
@@ -14,7 +13,7 @@ namespace RecebaFacil.IoC
         public static void Configure(IServiceCollection services)
         {
             services.AddSingleton<ISecurityService, SecurityService>();
-            
+
             // Data access
             services.AddScoped<ISqlAccess, SqlAcess>();
             
@@ -25,13 +24,10 @@ namespace RecebaFacil.IoC
             services.AddScoped<IDataServiceEmpresa, DataServiceEmpresa>();
             services.AddScoped<IDataServicePreRegistro, DataServicePreRegistro>();
             services.AddScoped<IDataServiceEndereco, DataServiceEndereco>();
+            services.AddScoped<IDataServiceExpediente, DataServiceExpediente>();
             
-            // Mappers
-            services.AddScoped<IUsuarioMapper, UsuarioMapper>();
-            services.AddScoped<IGrupoMapper, GrupoMapper>();
-            services.AddScoped<IContatoMapper, ContatoMapper>();
-            services.AddScoped<IEmpresaMapper, EmpresaMapper>();
-            services.AddScoped<IEnderecoMapper, EnderecoMapper>();
+            // Mapper
+            services.AddSingleton<FluentMapperCofiguration>();
 
             // Services
             services.AddScoped<IAuthService, AuthService>();
