@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RecebaFacil.Domain.Application.Constants;
+using RecebaFacil.Domain;
 using RecebaFacil.Portal.Models;
 using RecebaFacil.Portal.Services.Interfaces;
 
@@ -21,9 +21,10 @@ namespace RecebaFacil.Portal.Controllers
         {
             InicioViewModel model = new InicioViewModel
             {
-                Header = HeaderViewModel.Create(_loggedUser)
+                NomeEmpresa = _loggedUser.Empresa,
+                NomeUsuario = _loggedUser.Login
             };
-
+            ViewBag.EncomendasUrl = Url.RouteUrl("Encomenda_PontoVenda_Index");
             return View(model);
         }
     }

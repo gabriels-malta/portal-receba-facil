@@ -1,7 +1,11 @@
-﻿namespace RecebaFacil.Portal.Models
+﻿using System;
+
+namespace RecebaFacil.Portal.Models
 {
     public class InicioViewModel
     {
-        public HeaderViewModel Header { get; set; }
+        public string Hoje => DateTime.Now.ToShortDateString();
+        public string NomeEmpresa { get; set; }
+        public string NomeUsuario { get; set; }
     }
 }

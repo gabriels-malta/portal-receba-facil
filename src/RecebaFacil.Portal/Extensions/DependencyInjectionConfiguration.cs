@@ -1,13 +1,14 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using RecebaFacil.IoC;
 
 namespace RecebaFacil.Portal.Extensions
 {
     public static class DependencyInjectionConfiguration
     {
-        public static void AddDependencies(this IServiceCollection services)
+        public static void AddDependencies(this IServiceCollection services, IConfiguration configuration)
         {
-            DependencyInjectionResolver.Configure(services);
+            DependencyInjectionResolver.Configure(services, configuration);
         }
     }
 }

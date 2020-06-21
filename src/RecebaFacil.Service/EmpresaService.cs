@@ -1,35 +1,47 @@
 ﻿using Microsoft.Extensions.Logging;
-using RecebaFacil.Domain.DataServices;
 using RecebaFacil.Domain.Entities;
 using RecebaFacil.Domain.Exception;
 using RecebaFacil.Domain.Services;
+using RecebaFacil.Repository.Interfaces;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace RecebaFacil.Service
 {
     public class EmpresaService : IEmpresaService
     {
-        private readonly IDataServiceEmpresa _DataServiceEmpresa;
-        private readonly IEnderedecoService _EnderecoService;
+        private readonly IRepositoryEmpresa _repositoryEmpresa;
         private readonly ILogger<IEmpresaService> _logger;
+        private readonly IContatoService _contatoService;
 
-        public EmpresaService(IDataServiceEmpresa dataServiceEmpresa,
-                              IEnderedecoService enderecoService,
-                              ILogger<IEmpresaService> logger)
+        public EmpresaService(IRepositoryEmpresa repositoryEmpresa,
+                              ILogger<IEmpresaService> logger,
+                              IContatoService contatoService)
         {
-            _DataServiceEmpresa = dataServiceEmpresa;
-            _EnderecoService = enderecoService;
+            _repositoryEmpresa = repositoryEmpresa;
             _logger = logger;
+            _contatoService = contatoService;
         }
 
-        public Empresa ObterPorId(int id)
+        public async Task<string> ObterNomeEmpresa(Guid empresaId)
+        {
+            var empresa = await _repositoryEmpresa.ObterPorId(empresaId);
+            if (empresa != null)
+                return empresa.RazaoSocial;
+
+            return string.Empty;
+        }
+
+        public async Task<bool> Existe(Guid id) => await _repositoryEmpresa.Existe(x => x.Id == id);
+
+        public async Task<Empresa> ObterPorId(Guid id)
         {
             try
             {
-                Empresa empresa = _DataServiceEmpresa.ObterPorId(id);
-
-                if (empresa == null)
-                    throw new RecebaFacilException("Empresa não encontrada");
+                Empresa empresa = await _repositoryEmpresa.ObterPorId(id);
+                empresa.Contatos = await _contatoService.ListarPorEmpresa(id);
 
                 return empresa;
             }
@@ -40,21 +52,29 @@ namespace RecebaFacil.Service
             }
         }
 
-        public Empresa ObterPorId(int id, bool carregarEndereco)
+        public async Task<IList<Empresa>> ObterPontosVenda()
         {
             try
             {
-                Empresa empresa = ObterPorId(id);
-
-                if (carregarEndereco)
-                    empresa.AdicionarEndereco(_EnderecoService.ObterPorEmpresa(empresaId: id));
-
-                return empresa;
+                return await _repositoryEmpresa.ObterListaPor(x => x.TipoEmpresa == Domain.Enums.TipoEmpresa.PontoVenda);
             }
             catch (Exception ex)
             {
-                _logger.LogError("EmpresaService.ObterPorId", ex.Message);
-                throw new RecebaFacilException("Empresa não encontrada");
+                _logger.LogError("EmpresaService.ObterPontosVenda", ex.Message);
+                throw new RecebaFacilException("Nenhum ponto de venda cadastrado");
+            }
+        }
+
+        public async Task<IList<Empresa>> ObterPontosRetirada()
+        {
+            try
+            {
+                return await _repositoryEmpresa.ObterListaPor(x => x.TipoEmpresa == Domain.Enums.TipoEmpresa.PontoRetirada);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("EmpresaService.ObterPontosRetirada", ex.Message);
+                throw new RecebaFacilException("Nenhum ponto de retirada cadastrado");
             }
         }
     }

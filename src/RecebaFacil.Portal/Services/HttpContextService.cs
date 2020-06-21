@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
-using RecebaFacil.Domain.Application.Constants;
-using RecebaFacil.Domain.Application.Model;
+using RecebaFacil.Domain;
+using RecebaFacil.Domain.Core.Model;
 using RecebaFacil.Domain.Entities;
 using RecebaFacil.Domain.Services;
 using RecebaFacil.Portal.Services.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -31,9 +32,9 @@ namespace RecebaFacil.Portal.Services
             _cacheService = cacheService;
         }
 
-        public async Task SignIn(int usuarioId)
+        public async Task SignIn(Guid usuarioId)
         {
-            Usuario usuario = _usuarioService.ObterPorId(usuarioId);
+            Usuario usuario = _usuarioService.ObterPorId(usuarioId).Result;
             string encryptedUsuarioId = _securityService.EncryptValue(usuario.Id);
 
             IEnumerable<Claim> claims = new List<Claim>() {
@@ -94,12 +95,10 @@ namespace RecebaFacil.Portal.Services
         {
             LoggedUser usuarioLogado = new LoggedUser(usuario.Login,
                                                       usuario.Grupo.Role,
-                                                      usuario.Contato?.Empresa.NomeFantasia,
-                                                      usuario.Contato?.Valor,
+                                                      usuario.Empresa.NomeFantasia,
                                                       usuario.Id,
-                                                      usuario.Contato.EmpresaID,
-                                                      usuario.GrupoId,
-                                                      usuario.ContatoId.GetValueOrDefault(-1));
+                                                      usuario.Empresa.Id,
+                                                      usuario.GrupoId);
 
             _cacheService.Limpar(CacheKeys.UsuarioLogado);
             _cacheService.CriarOuObter(CacheKeys.UsuarioLogado, usuarioLogado);

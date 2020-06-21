@@ -1,12 +1,17 @@
 ﻿
 using RecebaFacil.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RecebaFacil.Domain.Services
 {
     public interface IEnderedecoService
     {
-        Endereco ObterPorId(int id);
-        Endereco ObterPorEmpresa(int empresaId);
-        int Salvar(Endereco endereco);
+        Task<Endereco> ObterPorId(Guid id);
+        Task<IList<Endereco>> ObterPorEmpresa(Guid empresaId);
+        Task Salvar(Endereco endereco);
+
+        Task<Endereco> ObterAtivoPorEmpresa(Guid empresaId);
     }
 }

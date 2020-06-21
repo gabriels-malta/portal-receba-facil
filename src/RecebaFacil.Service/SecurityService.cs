@@ -1,5 +1,6 @@
 ﻿using RecebaFacil.Domain.Services;
 using System;
+using System.Collections;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -33,6 +34,7 @@ namespace RecebaFacil.Service
             return HashValue(valor).Equals(hashText);
         }
 
+        public string EncryptValue(Guid valor) => EncryptValue(valor.ToString());
         public string EncryptValue(int valor) => EncryptValue(valor.ToString());
         public string EncryptValue(string valor)
         {

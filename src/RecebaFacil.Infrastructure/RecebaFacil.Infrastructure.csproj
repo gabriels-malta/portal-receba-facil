@@ -5,7 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="DataAccess\Core\DapperColumnMap.cs" />
+    <Compile Remove="DataAccess\Core\**" />
+    <EmbeddedResource Remove="DataAccess\Core\**" />
+    <None Remove="DataAccess\Core\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="DataAccess\RepositoryBase.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RecebaFacil.Domain\RecebaFacil.Domain.csproj" />
+    <ProjectReference Include="..\RecebaFacil.Repository\RecebaFacil.Repository.csproj" />
   </ItemGroup>
 
 </Project>

@@ -12,7 +12,6 @@ namespace RecebaFacil.Infrastructure.Mapper
             Map(x => x.GrupoId).ToColumn("tinCodGrupo");
             Map(x => x.Bloqueado).ToColumn("bitBloqueado");
             Map(x => x.TrocarSenha).ToColumn("bitDeveAlterarSenha");
-            Map(x => x.ContatoId).ToColumn("intIdContato");
         }
     }
 }

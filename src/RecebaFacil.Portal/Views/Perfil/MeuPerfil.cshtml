@@ -1,0 +1,50 @@
+﻿@model RecebaFacil.Portal.Models.PontoRetirada.MeuPerfilViewModel
+
+<div class="row">
+    <div class="col">
+        <div class="mb-3">
+            <ul class="nav nav-tabs" id="meuperfil-tab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="perfil-tab" data-ref="@Model.RoutePerfil"
+                       data-toggle="tab" href="#perfil" role="tab" aria-controls="meu perfil" aria-selected="true">Meu Perfil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="endereco-tab" data-ref="@Model.RouteEndereco"
+                       data-toggle="tab" href="#endereco" role="tab" aria-controls="endereços" aria-selected="false">Endereços</a>
+                </li>
+                @if (Model.ExibirAbaExpediente)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" id="expediente-tab" data-ref="@Model.RouteExpediente"
+                           data-toggle="tab" href="#expediente" role="tab" aria-controls="expediente" aria-selected="false">Expediente</a>
+                    </li>
+                }
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="perfil" role="tabpanel" aria-labelledby="home-tab">carregando...</div>
+                <div class="tab-pane" id="endereco" role="tabpanel" aria-labelledby="messages-tab">carregando...</div>
+                <div class="tab-pane" id="expediente" role="tabpanel" aria-labelledby="settings-tab">carregando...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $('#meuperfil-tab a').on('click', function (e) {
+                e.preventDefault();
+
+                const self = $(this)
+                    , url = self.data('ref')
+                    , target = $(`.tab-content ${self.attr('href')}`);
+
+                $.get(url, function (response) {
+                    target.empty().html(response);
+                    self.tab('show');
+                });
+            });
+            $('#perfil-tab').click();
+        });
+    </script>
+}

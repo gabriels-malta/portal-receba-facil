@@ -1,0 +1,33 @@
+﻿@model RecebaFacil.Portal.Models.PontoRetirada.PerfilViewModel
+
+<div class="row">
+    <div class="col-12 mt-3 mb-3 text-center">
+        <h3>Dados da Empresa</h3>
+    </div>
+    <div class="col">
+        <p>
+            <b>Nome fantasia</b>&nbsp;@Model.NomeFantasia
+        </p>
+        <p>
+            <b>Razão social</b>&nbsp;@Model.RazaoSocial
+        </p>
+        <p>
+            <b>CPNJ</b>&nbsp;@Model.Cnpj
+        </p>
+        <p>
+            Parceiro desde: @Model.DataCadastro.ToShortDateString()
+        </p>
+    </div>
+    @if (Model.Contatos.Any())
+    {
+        <div class="col">
+            <h3>Contatos</h3>
+            <ul class="list-group list-group-flush">
+                @foreach (var item in Model.Contatos)
+                {
+                    <li class="list-group-item">@item.Valor</li>
+                }
+            </ul>
+        </div>
+    }
+</div>

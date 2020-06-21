@@ -1,9 +1,11 @@
 ﻿using RecebaFacil.Domain.Entities;
+using System;
+using System.Threading.Tasks;
 
 namespace RecebaFacil.Domain.Services
 {
     public interface IGrupoService
     {
-        Grupo ObterPorId(short id);
+        Task<Grupo> ObterPorId(Guid id);
     }
 }

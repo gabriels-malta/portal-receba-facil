@@ -1,19 +1,40 @@
 ﻿using RecebaFacil.Domain.DataServices;
 using RecebaFacil.Domain.Entities;
-using RecebaFacil.Infrastructure.DataAccess.Core;
+using RecebaFacil.Repository.Interfaces;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RecebaFacil.Infrastructure.DataAccess
 {
-    public class DataServiceContato : RepositoryBase<Contato>, IDataServiceContato
+    public class DataServiceContato : IDataServiceContato
     {
-        public DataServiceContato(ISqlAccess databaseHandler)
-            : base(databaseHandler)
+        private readonly IRepositoryBase<Contato, int> _repository;
+
+        public DataServiceContato(IRepositoryBase<Contato, int> repository)
         {
+            _repository = repository;
         }
 
-        public Contato ObterPorId(int id)
+        public async Task Excluir(int id)
         {
-            return ExecuteToFirstOrDefault("sproc_Contato_ObterPorId", new { id });
+            Contato contato = await _repository.ObterPorId(id);
+            await _repository.Excluir(contato);
+        }
+
+        public async Task<Contato> ObterPorId(int id) => await _repository.ObterPorId(id);
+
+        public async Task<IList<Contato>> ObterTodos() => await _repository.ObterTodos();
+
+        public async Task Salvar(Contato contato)
+        {
+            if (contato.Id > 0)
+            {
+                await _repository.Atualizar(contato);
+            }
+            else
+            {
+                await _repository.Salvar(contato);
+            }
         }
     }
 }

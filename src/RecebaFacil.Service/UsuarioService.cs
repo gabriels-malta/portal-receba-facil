@@ -1,47 +1,68 @@
-﻿using RecebaFacil.Domain.DataServices;
+﻿using Microsoft.Extensions.Logging;
 using RecebaFacil.Domain.Entities;
+using RecebaFacil.Domain.Exception;
 using RecebaFacil.Domain.Services;
+using RecebaFacil.Repository.Interfaces;
 using System;
+using System.Threading.Tasks;
 
 namespace RecebaFacil.Service
 {
     public class UsuarioService : IUsuarioService
     {
-        private readonly IDataServiceUsuario _DataServiceUsuario;
-        private readonly IGrupoService _GrupoService;
-        private readonly IContatoService _ContatoService;
+        private readonly IRepositoryUsuario _repositoryUsuario;
+        private readonly ILogger<IUsuarioService> _logger;
+        private readonly ISecurityService _securityService;
+        private readonly IGrupoService _grupoService;
+        private readonly IEmpresaService _empresaService;
 
-        public UsuarioService(IDataServiceUsuario dataServiceUsuario,
-                              IGrupoService grupoService,
-                              IContatoService contatoService)
+        public UsuarioService(IRepositoryUsuario repositoryUSuario,
+                              ILogger<IUsuarioService> logger,
+                              ISecurityService securityService,
+                              IGrupoService grupoService, 
+                              IEmpresaService empresaService)
         {
-            _DataServiceUsuario = dataServiceUsuario;
-            _GrupoService = grupoService;
-            _ContatoService = contatoService;
+            _repositoryUsuario = repositoryUSuario;
+            _logger = logger;
+            _securityService = securityService;
+            _grupoService = grupoService;
+            _empresaService = empresaService;
         }
 
-        public Usuario BuscarPorAutenticacao(string login, string senha)
+        public async Task<Usuario> ObterPorId(Guid id)
         {
-            long usuarioId = _DataServiceUsuario.BuscarPorAutenticacao(login, senha);
+            try
+            {
+                var usuario = await _repositoryUsuario.ObterPorId(id);
+                usuario.Grupo = await _grupoService.ObterPorId(usuario.GrupoId);
+                usuario.Empresa = await _empresaService.ObterPorId(usuario.EmpresaId);
 
-            if (usuarioId == 0)
-                throw new Exception("Usuário ou senha inválido");
-
-            return ObterPorId(usuarioId);
+                return usuario;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("UsuarioService.ObterPorId", ex.Message);
+                throw new RecebaFacilException("Usuário não encontrado");
+            }
         }
 
-        public Usuario ObterPorId(long id)
+        public async Task NovoUsuario(Usuario usuario)
         {
-            Usuario usuario =  _DataServiceUsuario.ObterPorId(id);
+            usuario.Id = Guid.NewGuid();
+            usuario.Bloqueado = false;
+            usuario.TrocarSenha = false;
 
-            if (usuario == null)
-                throw new Exception("Usuário não encontrado");
+            try
+            {
+                usuario.Senha = _securityService.HashValue(usuario.Senha);
 
-            usuario
-                .AdicionarGrupo(_GrupoService.ObterPorId(usuario.GrupoId))
-                .AdicionarContato(_ContatoService.ObterPorId(usuario.ContatoId.GetValueOrDefault(-1), true));
-
-            return usuario;
+                await _repositoryUsuario.Salvar(usuario);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("UsuarioService.NovoUsuario", ex.Message);
+                throw new RecebaFacilException("Erro ao cadastrar novo usuário");
+            }
         }
     }
 }

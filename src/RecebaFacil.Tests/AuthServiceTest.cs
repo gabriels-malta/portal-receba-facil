@@ -2,7 +2,10 @@
 using RecebaFacil.Domain.Entities;
 using RecebaFacil.Domain.Exception;
 using RecebaFacil.Domain.Services;
+using RecebaFacil.Repository.Interfaces;
 using RecebaFacil.Service;
+using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace RecebaFacil.Tests
@@ -10,9 +13,8 @@ namespace RecebaFacil.Tests
     public class AuthServiceTest
     {
         private IAuthService _authService;
-        private IUsuarioService _usuarioService;
-        private ISecurityService _securityService;
-        private Mock<IUsuarioService> mockUsuarioService = new Mock<IUsuarioService>();
+
+        private Mock<IRepositoryUsuario> mockRepositoryUsuario = new Mock<IRepositoryUsuario>();
         private Mock<ISecurityService> mockSecurityService = new Mock<ISecurityService>();
 
         public AuthServiceTest()
@@ -23,55 +25,58 @@ namespace RecebaFacil.Tests
         [Fact]
         public void Deve_Retornar_Usuario_Bloqueado()
         {
-            mockUsuarioService
-                .Setup(x => x.BuscarPorAutenticacao("login", "qwe123"))
-                .Returns(new Usuario { Bloqueado = true });
-            _usuarioService = mockUsuarioService.Object;
-            _securityService = mockSecurityService.Object;
+            mockRepositoryUsuario
+                .Setup(x => x.ObterPrimeiroPor(u => u.Login == It.IsAny<string>() && u.Senha == It.IsAny<string>(), default))
+                .ReturnsAsync(new Usuario { Bloqueado = true });
 
-            _authService = new AuthService(_usuarioService, _securityService);
+            _authService = new AuthService(mockRepositoryUsuario.Object, mockSecurityService.Object);
 
-            RecebaFacilException ex = Assert.Throws<RecebaFacilException>(() =>
+            Task.Run(async () =>
             {
-                _authService.Autenticar("login", "123qwe");
-            });
+                RecebaFacilException recebaFacilException = await Assert.ThrowsAsync<RecebaFacilException>(async () =>
+                        {
+                            await _authService.Autenticar("login", "123qwe");
+                        });
 
-            Assert.Equal("Usuário está bloqueado. Entre em contato co o administrador do sistema", ex.Message);
+                Assert.Equal("Usuário está bloqueado. Entre em contato com o administrador do sistema", recebaFacilException.Message);
+            });
         }
 
         [Fact]
         public void Deve_Retornar_Usuario_Com_Senha_Bloqueada()
         {
-            mockUsuarioService
-                .Setup(x => x.BuscarPorAutenticacao("login", "qwe123"))
-                .Returns(new Usuario { TrocarSenha = true });
-            _usuarioService = mockUsuarioService.Object;
-            _securityService = mockSecurityService.Object;
+            mockRepositoryUsuario
+                .Setup(x => x.ObterPrimeiroPor(u => u.Login == It.IsAny<string>() && u.Senha == It.IsAny<string>(), default))
+                .ReturnsAsync(new Usuario { TrocarSenha = true });
 
-            _authService = new AuthService(_usuarioService, _securityService);
+            _authService = new AuthService(mockRepositoryUsuario.Object, mockSecurityService.Object);
 
-            RecebaFacilException ex = Assert.Throws<RecebaFacilException>(() =>
+            Task.Run(async () =>
             {
-                _authService.Autenticar("login", "123qwe");
-            });
+                RecebaFacilException recebaFacilException = await Assert.ThrowsAsync<RecebaFacilException>(async () =>
+                    {
+                        await _authService.Autenticar("login", "123qwe");
+                    });
 
-            Assert.Equal("Por favor, altere sua senha", ex.Message);
+                Assert.Equal("Por favor, altere sua senha", recebaFacilException.Message);
+            });
         }
 
         [Fact]
         public void Deve_Retornar_Um_Usuario()
         {
-            mockUsuarioService
-                .Setup(x => x.BuscarPorAutenticacao("login", "qwe123"))
-                .Returns(new Usuario { Id = 789 });
-            _usuarioService = mockUsuarioService.Object;
-            _securityService = mockSecurityService.Object;
+            mockRepositoryUsuario
+                .Setup(x => x.ObterPrimeiroPor(u => u.Login == It.IsAny<string>() && u.Senha == It.IsAny<string>(), default))
+                .ReturnsAsync(new Usuario { Id = Guid.Parse("8053841b-325c-4631-bf13-729df865d911") });
 
-            _authService = new AuthService(_usuarioService, _securityService);
-            
-            int usuarioId = _authService.Autenticar("login", "123qwe");
+            _authService = new AuthService(mockRepositoryUsuario.Object, mockSecurityService.Object);
 
-            Assert.Equal(789, usuarioId);
+            Task.Run(async () =>
+            {
+                Guid usuarioId = await _authService.Autenticar("login", "123qwe");
+                Assert.Equal(Guid.Parse("8053841b-325c-4631-bf13-729df865d911"), usuarioId);
+            });
+
         }
     }
 }

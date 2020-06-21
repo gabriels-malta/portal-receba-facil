@@ -1,59 +1,38 @@
-﻿using RecebaFacil.Domain.Exception;
+﻿using RecebaFacil.Domain.Core.BaseEntities;
+using RecebaFacil.Domain.Exception;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RecebaFacil.Domain.Entities
 {
-    public class Expediente : EntityBase<Guid>
+    public class Expediente : IEntityBase, IEquatable<Expediente>
     {
-        private Expediente() { }
+        public Guid Id { get; set; }
+        public Guid PontoRetiradaId { get; set; }
+        public DayOfWeek DiaSemana { get; set; }
+        public TimeSpan HoraAbertura { get; set; }
+        public TimeSpan HoraEncerramento { get; set; }
 
-        public Expediente(Guid id,
-            int pontoRetiradaID,
-            int diaSemana,
-            TimeSpan horaAbertura,
-            TimeSpan horaEncerramento)
-        {
-            Id = id;
-            PontoRetiradaID = pontoRetiradaID;
-            DiaSemana = diaSemana;
-            HoraAbertura = horaAbertura;
-            HoraEncerramento = horaEncerramento;
+        public virtual PontoRetirada PontoRetirada { get; set; }
 
-            ValidarDiaSemana();
-            ValidarHorarios();
-        }
-
-        public Expediente(
-            int pontoRetiradaID,
-            int diaSemana,
-            TimeSpan horaAbertura,
-            TimeSpan horaEncerramento)
-        {
-            Id = Guid.NewGuid();
-            PontoRetiradaID = pontoRetiradaID;
-            DiaSemana = diaSemana;
-            HoraAbertura = horaAbertura;
-            HoraEncerramento = horaEncerramento;
-
-            ValidarDiaSemana();
-            ValidarHorarios();
-        }
-
-        public int PontoRetiradaID { get; private set; }
-        public int DiaSemana { get; private set; }
-        public TimeSpan HoraAbertura { get; private set; }
-        public TimeSpan HoraEncerramento { get; private set; }
-
-        private void ValidarHorarios()
+        public void ValidarHorarios()
         {
             if (HoraAbertura.CompareTo(HoraEncerramento) >= 0)
                 throw new RecebaFacilException($"Horário de funcionamento inválido");
         }
 
-        private void ValidarDiaSemana()
+        public void ValidarDiaSemana()
         {
             if (!Enum.IsDefined(typeof(DayOfWeek), DiaSemana))
                 throw new RecebaFacilException("Dia da semana inválido");
+        }
+
+        public bool Equals([AllowNull] Expediente other)
+        {
+            if (other == null)
+                return false;
+
+            return PontoRetiradaId == other.PontoRetiradaId && DiaSemana == other.DiaSemana;
         }
     }
 }

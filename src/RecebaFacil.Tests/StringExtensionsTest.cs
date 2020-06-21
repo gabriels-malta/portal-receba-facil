@@ -25,7 +25,12 @@ namespace RecebaFacil.Tests
         [Fact]
         public void Deve_Formatar_Um_CNPJ()
         {
-            Empresa empresa = new PontoRetirada("razao social", "nome fantasia", "45278850000194");
+            Empresa empresa = new PontoRetirada
+            {
+                RazaoSocial = "razao social",
+                NomeFantasia = "nome fantasia",
+                Cnpj = "45278850000194"
+            };
 
             Assert.Equal("45.278.850/0001-94", empresa.Cnpj);
 
