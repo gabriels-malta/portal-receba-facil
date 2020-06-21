@@ -5,13 +5,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using RecebaFacil.Domain.Enums;
 using RecebaFacil.Repository.ContextConfig;
 
 namespace RecebaFacil.Repository.Migrations
 {
     [DbContext(typeof(RFContext))]
-    [Migration("20200621024149_CreateContext")]
-    partial class CreateContext
+    [Migration("20200621232517_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -76,9 +77,14 @@ namespace RecebaFacil.Repository.Migrations
                     b.Property<string>("RazaoSocial")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TipoEmpresa")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Empresa");
+
+                    b.HasDiscriminator<int>("TipoEmpresa").HasValue(0);
                 });
 
             modelBuilder.Entity("RecebaFacil.Domain.Entities.Encomenda", b =>
@@ -96,35 +102,15 @@ namespace RecebaFacil.Repository.Migrations
                     b.Property<string>("NumeroPedido")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PontoRetiradaId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("PontoRetiradaId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("PontoVendaId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("PontoVendaId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.ToTable("Encomenda");
-                });
-
-            modelBuilder.Entity("RecebaFacil.Domain.Entities.EncomendaEmpresa", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("EncomendaId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("PontoRetiradaId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PontoVendaId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EncomendaEmpresa");
                 });
 
             modelBuilder.Entity("RecebaFacil.Domain.Entities.EncomendaHistoria", b =>
@@ -139,13 +125,7 @@ namespace RecebaFacil.Repository.Migrations
                     b.Property<Guid>("EncomendaId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Observacao")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("TipoMovimento")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UsuarioId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -217,6 +197,8 @@ namespace RecebaFacil.Repository.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PontoRetiradaId");
 
                     b.ToTable("Expediente");
                 });
@@ -306,6 +288,20 @@ namespace RecebaFacil.Repository.Migrations
                     b.ToTable("Usuario");
                 });
 
+            modelBuilder.Entity("RecebaFacil.Domain.Entities.PontoRetirada", b =>
+                {
+                    b.HasBaseType("RecebaFacil.Domain.Entities.Empresa");
+
+                    b.HasDiscriminator().HasValue(2);
+                });
+
+            modelBuilder.Entity("RecebaFacil.Domain.Entities.PontoVenda", b =>
+                {
+                    b.HasBaseType("RecebaFacil.Domain.Entities.Empresa");
+
+                    b.HasDiscriminator().HasValue(1);
+                });
+
             modelBuilder.Entity("RecebaFacil.Domain.Entities.Contato", b =>
                 {
                     b.HasOne("RecebaFacil.Domain.Entities.Empresa", null)
@@ -329,6 +325,15 @@ namespace RecebaFacil.Repository.Migrations
                     b.HasOne("RecebaFacil.Domain.Entities.Empresa", null)
                         .WithMany("Enderecos")
                         .HasForeignKey("EmpresaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("RecebaFacil.Domain.Entities.Expediente", b =>
+                {
+                    b.HasOne("RecebaFacil.Domain.Entities.PontoRetirada", "PontoRetirada")
+                        .WithMany("Expediente")
+                        .HasForeignKey("PontoRetiradaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

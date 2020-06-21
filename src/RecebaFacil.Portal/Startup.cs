@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using RecebaFacil.Portal.Extensions;
 using RecebaFacil.Portal.Services;
 using RecebaFacil.Portal.Services.Interfaces;
+using System.Globalization;
 
 namespace RecebaFacil.Portal
 {
@@ -36,6 +37,10 @@ namespace RecebaFacil.Portal
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var cultureInfo = new CultureInfo("pt-BR");
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

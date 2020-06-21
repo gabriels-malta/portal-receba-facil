@@ -8,7 +8,8 @@ namespace RecebaFacil.IoC.DependencyInjection
     {
         public static void Configure(IServiceCollection services)
         {
-            services.AddSingleton<ISecurityService, SecurityService>();
+            services.AddScoped<ISecurityService, SecurityService>();
+            services.AddScoped<IEnumService, EnumService>();
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IGrupoService, GrupoService>();
@@ -18,6 +19,7 @@ namespace RecebaFacil.IoC.DependencyInjection
             services.AddScoped<IPreRegistroService, PreRegistroService>();
             services.AddScoped<IEnderedecoService, EnderecoService>();
             services.AddScoped<IExpedienteService, ExpedienteService>();
+            services.AddScoped<IEncomendaService, EncomendaService>();
         }
     }
 }

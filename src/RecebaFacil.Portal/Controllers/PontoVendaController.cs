@@ -21,9 +21,10 @@ namespace RecebaFacil.Portal.Controllers
         {
             InicioViewModel model = new InicioViewModel
             {
-                Header = HeaderViewModel.Create(_loggedUser)
+                NomeEmpresa = _loggedUser.Empresa,
+                NomeUsuario = _loggedUser.Login
             };
-
+            ViewBag.EncomendasUrl = Url.RouteUrl("Encomenda_PontoVenda_Index");
             return View(model);
         }
     }

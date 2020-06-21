@@ -38,84 +38,11 @@ namespace RecebaFacil.IoC.ContextSeed
                 Nome = "Ponto de Venda",
                 Role = "PONTO_VENDA"
             };
-        }
-    }
-
-    public class ExpedienteSeed : ISeedService
-    {
-        private readonly IRepositoryExpediente _repository;
-
-        public ExpedienteSeed(IRepositoryExpediente repository)
-        {
-            _repository = repository;
-        }
-
-        public async Task Feed()
-        {
-            foreach (Expediente expediente in CriarExpedientes())
+            yield return new Grupo
             {
-                await _repository.Salvar(expediente);
-            }
-        }
-
-        private IEnumerable<Expediente> CriarExpedientes()
-        {
-            Guid pontoRetiradaId = Guid.Parse("abe3dbb7-baaf-4699-a568-6c6bb21f7d0b");
-            yield return new Expediente
-            {
-                Id = Guid.NewGuid(),
-                PontoRetiradaId = pontoRetiradaId,
-                HoraAbertura = new TimeSpan(9, 0, 0),
-                HoraEncerramento = new TimeSpan(20, 0, 0),
-                DiaSemana = DayOfWeek.Monday
-            };
-            yield return new Expediente
-            {
-                Id = Guid.NewGuid(),
-                PontoRetiradaId = pontoRetiradaId,
-                HoraAbertura = new TimeSpan(9, 0, 0),
-                HoraEncerramento = new TimeSpan(20, 0, 0),
-                DiaSemana = DayOfWeek.Tuesday
-            };
-            yield return new Expediente
-            {
-                Id = Guid.NewGuid(),
-                PontoRetiradaId = pontoRetiradaId,
-                HoraAbertura = new TimeSpan(9, 0, 0),
-                HoraEncerramento = new TimeSpan(20, 0, 0),
-                DiaSemana = DayOfWeek.Wednesday
-            };
-            yield return new Expediente
-            {
-                Id = Guid.NewGuid(),
-                PontoRetiradaId = pontoRetiradaId,
-                HoraAbertura = new TimeSpan(9, 0, 0),
-                HoraEncerramento = new TimeSpan(20, 0, 0),
-                DiaSemana = DayOfWeek.Thursday
-            };
-            yield return new Expediente
-            {
-                Id = Guid.NewGuid(),
-                PontoRetiradaId = pontoRetiradaId,
-                HoraAbertura = new TimeSpan(9, 0, 0),
-                HoraEncerramento = new TimeSpan(20, 0, 0),
-                DiaSemana = DayOfWeek.Friday
-            };
-            yield return new Expediente
-            {
-                Id = Guid.NewGuid(),
-                PontoRetiradaId = pontoRetiradaId,
-                HoraAbertura = new TimeSpan(10, 0, 0),
-                HoraEncerramento = new TimeSpan(18, 0, 0),
-                DiaSemana = DayOfWeek.Saturday
-            };
-            yield return new Expediente
-            {
-                Id = Guid.NewGuid(),
-                PontoRetiradaId = pontoRetiradaId,
-                HoraAbertura = new TimeSpan(10, 0, 0),
-                HoraEncerramento = new TimeSpan(14, 0, 0),
-                DiaSemana = DayOfWeek.Sunday
+                Id = Guid.Parse("8bfe7e07-52d4-420b-a349-0037d98a84ef"),
+                Nome = "Administrador",
+                Role = "ADMINISTRADOR"
             };
         }
     }

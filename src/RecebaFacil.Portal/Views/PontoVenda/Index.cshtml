@@ -1,3 +1,31 @@
 ﻿@model RecebaFacil.Portal.Models.InicioViewModel
 
-<partial name="_Header" model="@Model.Header" />
+<div class="row mb-5">
+    <div class="col-8">
+        <h2 class="d-inline">
+            @Model.NomeEmpresa
+        </h2>
+        &nbsp;
+        <a title="Meu Perfil" aria-label="acessar meu perfil" class="btn-link text-muted"
+           asp-route="MeuPerfil">
+            <i class="fa fa-user-alt"></i>
+        </a>
+    </div>
+    <div class="col-4 text-lg-right">
+        <p class="d-inline-block">
+            Usuário: @Model.NomeUsuario<br />Acesso: @Model.Hoje
+        </p>
+    </div>
+</div>
+
+<div id="index-encomendas"></div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $.get("@ViewBag.EncomendasUrl", function (response) {
+                $("#index-encomendas").empty().html(response);
+            });
+        });
+    </script>
+}

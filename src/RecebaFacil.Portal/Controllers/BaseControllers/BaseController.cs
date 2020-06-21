@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using RecebaFacil.Portal.Services.Interfaces;
 
 namespace RecebaFacil.Portal.Controllers

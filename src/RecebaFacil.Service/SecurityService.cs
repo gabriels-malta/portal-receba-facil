@@ -1,5 +1,6 @@
 ﻿using RecebaFacil.Domain.Services;
 using System;
+using System.Collections;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;

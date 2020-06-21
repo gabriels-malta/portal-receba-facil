@@ -13,6 +13,8 @@ namespace RecebaFacil.Domain.Entities
         public TimeSpan HoraAbertura { get; set; }
         public TimeSpan HoraEncerramento { get; set; }
 
+        public virtual PontoRetirada PontoRetirada { get; set; }
+
         public void ValidarHorarios()
         {
             if (HoraAbertura.CompareTo(HoraEncerramento) >= 0)

@@ -14,7 +14,7 @@ namespace RecebaFacil.Repository
     public class RepositoryBase<TEntity> : IRepositoryBase<TEntity>
         where TEntity : class, IEntityBase
     {
-        private readonly RFContext _context;
+        protected readonly RFContext _context;
 
         public RepositoryBase(RFContext context)
         {

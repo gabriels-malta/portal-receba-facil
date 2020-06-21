@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace RecebaFacil.Repository.Migrations
 {
-    public partial class CreateContext : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,6 +14,7 @@ namespace RecebaFacil.Repository.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     DataCadastro = table.Column<DateTime>(nullable: false),
                     DataUltimaModificacao = table.Column<DateTime>(nullable: false),
+                    TipoEmpresa = table.Column<int>(nullable: false),
                     RazaoSocial = table.Column<string>(nullable: true),
                     NomeFantasia = table.Column<string>(nullable: true),
                     Cnpj = table.Column<string>(nullable: true)
@@ -28,8 +29,8 @@ namespace RecebaFacil.Repository.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    PontoVendaId = table.Column<int>(nullable: false),
-                    PontoRetiradaId = table.Column<int>(nullable: false),
+                    PontoVendaId = table.Column<Guid>(nullable: false),
+                    PontoRetiradaId = table.Column<Guid>(nullable: false),
                     NotaFiscal = table.Column<string>(nullable: true),
                     NumeroPedido = table.Column<string>(nullable: true),
                     DataPedido = table.Column<DateTime>(nullable: false)
@@ -37,35 +38,6 @@ namespace RecebaFacil.Repository.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Encomenda", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "EncomendaEmpresa",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    EncomendaId = table.Column<Guid>(nullable: false),
-                    PontoVendaId = table.Column<int>(nullable: false),
-                    PontoRetiradaId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EncomendaEmpresa", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Expediente",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    PontoRetiradaId = table.Column<Guid>(nullable: false),
-                    DiaSemana = table.Column<int>(nullable: false),
-                    HoraAbertura = table.Column<TimeSpan>(nullable: false),
-                    HoraEncerramento = table.Column<TimeSpan>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Expediente", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -152,15 +124,34 @@ namespace RecebaFacil.Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Expediente",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    PontoRetiradaId = table.Column<Guid>(nullable: false),
+                    DiaSemana = table.Column<int>(nullable: false),
+                    HoraAbertura = table.Column<TimeSpan>(nullable: false),
+                    HoraEncerramento = table.Column<TimeSpan>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Expediente", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Expediente_Empresa_PontoRetiradaId",
+                        column: x => x.PontoRetiradaId,
+                        principalTable: "Empresa",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "EncomendaHistoria",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
                     EncomendaId = table.Column<Guid>(nullable: false),
                     DataCadastro = table.Column<DateTime>(nullable: false),
-                    TipoMovimento = table.Column<int>(nullable: false),
-                    UsuarioId = table.Column<int>(nullable: false),
-                    Observacao = table.Column<string>(nullable: true)
+                    TipoMovimento = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -218,6 +209,11 @@ namespace RecebaFacil.Repository.Migrations
                 column: "EmpresaId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Expediente_PontoRetiradaId",
+                table: "Expediente",
+                column: "PontoRetiradaId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Usuario_EmpresaId",
                 table: "Usuario",
                 column: "EmpresaId");
@@ -232,9 +228,6 @@ namespace RecebaFacil.Repository.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Contato");
-
-            migrationBuilder.DropTable(
-                name: "EncomendaEmpresa");
 
             migrationBuilder.DropTable(
                 name: "EncomendaHistoria");

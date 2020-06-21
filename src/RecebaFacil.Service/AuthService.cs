@@ -25,6 +25,9 @@ namespace RecebaFacil.Service
 
             Usuario usuario = await _repositoryUsuario.ObterPrimeiroPor(x => email == x.Login && _senha == x.Senha);
 
+            if (usuario == null)
+                throw new RecebaFacilException("Usuário ou senha inválido");
+
             if (usuario.Bloqueado)
                 throw new RecebaFacilException("Usuário está bloqueado. Entre em contato com o administrador do sistema");
 

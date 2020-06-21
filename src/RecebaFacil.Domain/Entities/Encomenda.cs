@@ -8,9 +8,9 @@ namespace RecebaFacil.Domain.Entities
 {
     public class Encomenda : IEntityBase
     {
-        public Guid Id { get; set; }
-        public int PontoVendaId { get; set; }
-        public int PontoRetiradaId { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid PontoVendaId { get; set; }
+        public Guid PontoRetiradaId { get; set; }
         public string NotaFiscal { get; set; }
         public string NumeroPedido { get; set; }
         public DateTime DataPedido { get; set; }

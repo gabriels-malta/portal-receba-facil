@@ -5,6 +5,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ContextSeed\**" />
+    <EmbeddedResource Remove="ContextSeed\**" />
+    <None Remove="ContextSeed\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="DependencyInjection\SeedInstallers.cs" />
+    <Compile Remove="ISeedService.cs" />
+    <Compile Remove="SeedHostedService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.5" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.5" />
   </ItemGroup>

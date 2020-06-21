@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RecebaFacil.Portal.Extensions
+namespace RecebaFacil.Domain
 {
     public static class NumberExtensions
     {

@@ -11,8 +11,6 @@ namespace RecebaFacil.IoC
             ContextInstaller.Configure(services, configuration);
             RepositoryInstallers.Configure(services);
             ServiceInstallers.Configure(services);
-
-            //SeedInstallers.Configure(services);
         }
     }
 }

@@ -30,12 +30,47 @@ namespace RecebaFacil.IoC.ContextSeed
 
         private IEnumerable<Empresa> CriarEmpresas()
         {
-            Guid pontoRetiradaId = Guid.Parse("abe3dbb7-baaf-4699-a568-6c6bb21f7d0b");
-            Guid pontoVendaId = Guid.Parse("4a1cc27c-1011-4d19-9d9e-c0099266fab3");
+            Empresa recebaFacil = CriarRecebaFacil();
+            PontoRetirada pontoRetirada = CriarPontoRetirada();
+            PontoVenda pontoVenda = CriarPontoVenda();
 
+            yield return recebaFacil;
+            yield return pontoRetirada;
+            yield return pontoVenda;
+        }
+
+        private Empresa CriarRecebaFacil()
+        {
+            Empresa recebaFacil = new Empresa
+            {
+                Id = Guid.Parse("37479693-b577-499d-ac43-53e253946a80"),
+                Cnpj = "74650274000162",
+                DataCadastro = DateTime.UtcNow,
+                DataUltimaModificacao = DateTime.UtcNow,
+                RazaoSocial = "Receba Facil LTDA",
+                NomeFantasia = "Receba Facil"
+            };
+
+            recebaFacil.Usuarios = new List<Usuario>
+            {
+                new Usuario
+                {
+                    Id = Guid.Parse("5b6cfb25-7414-4842-997d-796394c57f35"),
+                    EmpresaId = recebaFacil.Id,
+                    GrupoId = Guid.Parse("8bfe7e07-52d4-420b-a349-0037d98a84ef"),
+                    Login = "recebafacil",
+                    Senha = _securityService.HashValue("recebafacil")
+                }
+            };
+
+            return recebaFacil;
+        }
+
+        private PontoRetirada CriarPontoRetirada()
+        {
             PontoRetirada pontoRetirada = new PontoRetirada
             {
-                Id = pontoRetiradaId,
+                Id = Guid.Parse("38206f56-9480-4d2a-9745-187775fc05b8"),
                 RazaoSocial = "Josefa e Marina Contábil ME",
                 NomeFantasia = "Contabilidade Central",
                 Cnpj = "96764621000110",
@@ -47,7 +82,7 @@ namespace RecebaFacil.IoC.ContextSeed
                 new Usuario
                 {
                     Id =  Guid.NewGuid(),
-                    EmpresaId = pontoRetiradaId,
+                    EmpresaId = pontoRetirada.Id,
                     GrupoId = Guid.Parse("44edaf28-785d-49a7-a798-8b1893be19d0"),
                     Login = "josefaemarina",
                     Senha = _securityService.HashValue("123qwe")
@@ -63,7 +98,7 @@ namespace RecebaFacil.IoC.ContextSeed
                     DataCadastro = DateTime.UtcNow,
                     DataUltimaModificacao = DateTime.UtcNow,
                     Ativo = true,
-                    EmpresaId = pontoRetiradaId
+                    EmpresaId = pontoRetirada.Id
                 },
                 new Contato
                 {
@@ -73,7 +108,7 @@ namespace RecebaFacil.IoC.ContextSeed
                     DataCadastro = DateTime.UtcNow,
                     DataUltimaModificacao = DateTime.UtcNow,
                     Ativo = true,
-                    EmpresaId = pontoRetiradaId
+                    EmpresaId = pontoRetirada.Id
                 },
                 new Contato
                 {
@@ -83,7 +118,7 @@ namespace RecebaFacil.IoC.ContextSeed
                     DataCadastro = DateTime.UtcNow,
                     DataUltimaModificacao = DateTime.UtcNow,
                     Ativo = true,
-                    EmpresaId = pontoRetiradaId
+                    EmpresaId = pontoRetirada.Id
                 }
             };
             pontoRetirada.Enderecos = new List<Endereco>()
@@ -91,7 +126,7 @@ namespace RecebaFacil.IoC.ContextSeed
                 new Endereco
                 {
                     Id = Guid.NewGuid(),
-                    EmpresaId = pontoRetiradaId,
+                    EmpresaId = pontoRetirada.Id,
                     Ativo = true,
                     DataCadastro = DateTime.UtcNow,
                     DataUltimaModificacao = DateTime.UtcNow,
@@ -101,11 +136,15 @@ namespace RecebaFacil.IoC.ContextSeed
                     Municipio = "Guarulhos",
                     Uf = "SP"
                 }
-            };            
+            };
+            return pontoRetirada;
+        }
 
+        private PontoVenda CriarPontoVenda()
+        {
             PontoVenda pontoVenda = new PontoVenda
             {
-                Id = pontoVendaId,
+                Id = Guid.Parse("4a1cc27c-1011-4d19-9d9e-c0099266fab3"),
                 RazaoSocial = "Comercio Eletrônico TendiTudo LTDA-ME",
                 NomeFantasia = "TendiTudo!",
                 Cnpj = "15536219000187",
@@ -117,7 +156,7 @@ namespace RecebaFacil.IoC.ContextSeed
                 new Usuario
                 {
                     Id = Guid.NewGuid(),
-                    EmpresaId = pontoVendaId,
+                    EmpresaId = pontoVenda.Id,
                     GrupoId = Guid.Parse("d010bd9d-b922-4cc5-a3fe-cb37bd418802"),
                     Login = "tenditudo",
                     Senha = _securityService.HashValue("123qwe")
@@ -133,7 +172,7 @@ namespace RecebaFacil.IoC.ContextSeed
                     DataCadastro = DateTime.UtcNow,
                     DataUltimaModificacao = DateTime.UtcNow,
                     Ativo = true,
-                    EmpresaId = pontoVendaId
+                    EmpresaId = pontoVenda.Id
                 },
                 new Contato
                 {
@@ -143,7 +182,7 @@ namespace RecebaFacil.IoC.ContextSeed
                     DataCadastro = DateTime.UtcNow,
                     DataUltimaModificacao = DateTime.UtcNow,
                     Ativo = true,
-                    EmpresaId = pontoVendaId
+                    EmpresaId = pontoVenda.Id
                 },
                 new Contato
                 {
@@ -153,7 +192,7 @@ namespace RecebaFacil.IoC.ContextSeed
                     DataCadastro = DateTime.UtcNow,
                     DataUltimaModificacao = DateTime.UtcNow,
                     Ativo = true,
-                    EmpresaId = pontoVendaId
+                    EmpresaId = pontoVenda.Id
                 }
             };
             pontoVenda.Enderecos = new List<Endereco>()
@@ -161,7 +200,7 @@ namespace RecebaFacil.IoC.ContextSeed
                 new Endereco
                 {
                     Id = Guid.NewGuid(),
-                    EmpresaId = pontoVendaId,
+                    EmpresaId = pontoVenda.Id,
                     Ativo = true,
                     DataCadastro = DateTime.UtcNow,
                     DataUltimaModificacao = DateTime.UtcNow,
@@ -172,9 +211,7 @@ namespace RecebaFacil.IoC.ContextSeed
                     Uf = "SP"
                 }
             };
-
-            yield return pontoRetirada;
-            yield return pontoVenda;
+            return pontoVenda;
         }
     }
 }

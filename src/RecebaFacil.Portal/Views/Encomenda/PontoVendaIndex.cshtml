@@ -1,0 +1,61 @@
+﻿@model IEnumerable<RecebaFacil.Portal.Models.Encomenda.EncomendaViewModel>
+
+<div id="container-pv-encomendas">
+    <div class="row">
+        <div class="col">
+            <h1>Minhas encomendas</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <button id="btnNovaEncomenda" class="btn btn-primary btn-lg">
+                Adicionar encomenda
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="table-responsive">
+                <table class="table table-borderless">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Data Pedido</th>
+                            <th>Número Pedido</th>
+                            <th>Nota Fiscal</th>
+                            <th>Situação</th>
+                            <th>Ponto de Retirada</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td></td>
+                                <td>@item.DataPedido</td>
+                                <td>@item.NumeroPedido</td>
+                                <td>@item.NotaFiscal</td>
+                                <td>@item.TipoMovimento</td>
+                                <td>@item.PontoRetiradaNome</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+        $("#btnNovaEncomenda").on("click", function () {
+            $.get("@ViewBag.NovaEncomedaURL", function (response) {
+                $("#container-pv-encomendas").append(response);
+                $("#modalNovaEncomenda").modal("show");
+            });
+        });
+    });
+</script>
