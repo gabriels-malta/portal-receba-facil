@@ -6,6 +6,7 @@ using RecebaFacil.Domain.Services;
 using RecebaFacil.Portal.Models.Auth;
 using RecebaFacil.Portal.Services.Interfaces;
 using System;
+using System.Threading.Tasks;
 
 namespace RecebaFacil.Portal.Controllers
 {
@@ -31,16 +32,16 @@ namespace RecebaFacil.Portal.Controllers
 
         [HttpPost("autenticar", Name = "Auth_Autenticar")]
         [ValidateAntiForgeryToken]
-        public IActionResult Index(LogonViewModel model)
+        public async Task<IActionResult> Index(LogonViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
             try
             {
-                Guid usuarioId = _AuthService.Autenticar(model.LoginName, model.Senha);
+                Guid usuarioId = await _AuthService.Autenticar(model.LoginName, model.Senha);
 
-                _httpContextService.SignIn(usuarioId);
+                await _httpContextService.SignIn(usuarioId);
 
                 return RedirectToAction("Index", "Home");
             }

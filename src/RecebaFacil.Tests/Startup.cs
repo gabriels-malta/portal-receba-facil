@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RecebaFacil.IoC;
+using RecebaFacil.Domain.Services;
+using RecebaFacil.Repository;
+using RecebaFacil.Repository.Interfaces;
+using RecebaFacil.Service;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.DependencyInjection;
@@ -14,7 +17,11 @@ namespace RecebaFacil.Tests
 
         protected void ConfiguraServices(IServiceCollection services, IConfiguration configuration)
         {
-            DependencyInjectionResolver.Configure(services, configuration);
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ISecurityService, SecurityService>();
+
+            services.AddScoped<IRepositoryUsuario, RepositoryUsuario>();
+
         }
     }
 }

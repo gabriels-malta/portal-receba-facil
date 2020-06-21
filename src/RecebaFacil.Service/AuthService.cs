@@ -3,6 +3,7 @@ using RecebaFacil.Domain.Exception;
 using RecebaFacil.Domain.Services;
 using RecebaFacil.Repository.Interfaces;
 using System;
+using System.Threading.Tasks;
 
 namespace RecebaFacil.Service
 {
@@ -18,16 +19,14 @@ namespace RecebaFacil.Service
             _SecurityService = securityService;
         }
 
-        public Guid Autenticar(string email, string senha)
+        public async Task<Guid> Autenticar(string email, string senha)
         {
             string _senha = _SecurityService.HashValue(senha);
 
-            Usuario usuario = _repositoryUsuario.ObterPrimeiroPor(x => email == x.Login && _senha == x.Senha)
-                .GetAwaiter()
-                .GetResult();
+            Usuario usuario = await _repositoryUsuario.ObterPrimeiroPor(x => email == x.Login && _senha == x.Senha);
 
             if (usuario.Bloqueado)
-                throw new RecebaFacilException("Usuário está bloqueado. Entre em contato co o administrador do sistema");
+                throw new RecebaFacilException("Usuário está bloqueado. Entre em contato com o administrador do sistema");
 
             if (usuario.TrocarSenha)
                 throw new RecebaFacilException("Por favor, altere sua senha");
