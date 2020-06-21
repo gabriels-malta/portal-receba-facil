@@ -1,21 +1,24 @@
-﻿using RecebaFacil.Domain.DataServices;
-using RecebaFacil.Domain.Entities;
+﻿using RecebaFacil.Domain.Entities;
 using RecebaFacil.Domain.Services;
+using RecebaFacil.Repository.Interfaces;
+using System;
+using System.Threading.Tasks;
 
 namespace RecebaFacil.Service
 {
     public class PreRegistroService : IPreRegistroService
     {
-        private readonly IDataServicePreRegistro _PreRegistroService;
+        private readonly IRepositoryPreRegistro _repositoryPreRegistro;
 
-        public PreRegistroService(IDataServicePreRegistro preRegistroService)
+        public PreRegistroService(IRepositoryPreRegistro repositoryPreRegistro)
         {
-            _PreRegistroService = preRegistroService;
+            _repositoryPreRegistro = repositoryPreRegistro;
         }
 
-        public int Salvar(PreRegistro entity)
+        public async Task Salvar(PreRegistro preRegistro)
         {
-            return _PreRegistroService.Salvar(entity);
+            preRegistro.Id = Guid.NewGuid();
+            await _repositoryPreRegistro.Salvar(preRegistro);
         }
     }
 }

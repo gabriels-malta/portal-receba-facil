@@ -1,12 +1,14 @@
-﻿using RecebaFacil.Domain.Exception;
+﻿using RecebaFacil.Domain.Core.BaseEntities;
+using RecebaFacil.Domain.Exception;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace RecebaFacil.Domain.Entities
 {
-    public class Encomenda : EntityBase<Guid>
+    public class Encomenda : IEntityBase
     {
+        public Guid Id { get; set; }
         public int PontoVendaId { get; set; }
         public int PontoRetiradaId { get; set; }
         public string NotaFiscal { get; set; }
@@ -18,7 +20,7 @@ namespace RecebaFacil.Domain.Entities
 
         public void AdicionarHistoria(EncomendaHistoria historia)
         {
-            if (_historia.Any(x => (x.EncomendaId, x.TipoMovimento.Id) == (historia.EncomendaId, historia.TipoMovimento.Id)))
+            if (_historia.Any(x => x.Equals(historia)))
                 throw new RecebaFacilException("Movimento não permitido para esta encomendaa");
 
             _historia.Add(historia);

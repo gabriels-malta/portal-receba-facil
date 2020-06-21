@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using RecebaFacil.IoC;
 using Xunit;
 using Xunit.Abstractions;
@@ -11,9 +12,9 @@ namespace RecebaFacil.Tests
     {
         public Startup(IMessageSink messageSink) : base(messageSink) { }
 
-        protected void ConfiguraServices(IServiceCollection services)
+        protected void ConfiguraServices(IServiceCollection services, IConfiguration configuration)
         {
-            DependencyInjectionResolver.Configure(services);
+            DependencyInjectionResolver.Configure(services, configuration);
         }
     }
 }

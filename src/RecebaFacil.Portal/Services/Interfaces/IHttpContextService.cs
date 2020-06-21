@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace RecebaFacil.Portal.Services.Interfaces
 {
@@ -9,7 +10,7 @@ namespace RecebaFacil.Portal.Services.Interfaces
         int ObterIdUsuarioLogado();
         string ObterRotaInicial();
 
-        Task SignIn(int usuarioId);
+        Task SignIn(Guid usuarioId);
         Task SignOut();
     }
 }

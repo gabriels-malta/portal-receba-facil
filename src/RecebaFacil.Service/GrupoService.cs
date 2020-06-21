@@ -1,21 +1,23 @@
-﻿using RecebaFacil.Domain.DataServices;
-using RecebaFacil.Domain.Entities;
+﻿using RecebaFacil.Domain.Entities;
 using RecebaFacil.Domain.Services;
+using RecebaFacil.Repository.Interfaces;
+using System;
+using System.Threading.Tasks;
 
 namespace RecebaFacil.Service
 {
     public class GrupoService : IGrupoService
     {
-        private readonly IDataServiceGrupo _DataServiceGrupo;
+        private readonly IRepositoryGrupo _repositoryGrupo;
 
-        public GrupoService(IDataServiceGrupo dataServiceGrupo)
+        public GrupoService(IRepositoryGrupo repositoryGrupo)
         {
-            _DataServiceGrupo = dataServiceGrupo;
+            _repositoryGrupo = repositoryGrupo;
         }
 
-        public Grupo ObterPorId(short id)
+        public async Task<Grupo> ObterPorId(Guid id)
         {
-            return _DataServiceGrupo.ObterPorId(id);
+            return await _repositoryGrupo.ObterPorId(id);
         }
     }
 }

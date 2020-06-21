@@ -1,7 +1,10 @@
-﻿namespace RecebaFacil.Domain.Services
+﻿using System;
+
+namespace RecebaFacil.Domain.Services
 {
     public interface ISecurityService
     {
+        string EncryptValue(Guid valor);
         string EncryptValue(int valor);
         string EncryptValue(string valor);
         string DecryptValue(string valor);

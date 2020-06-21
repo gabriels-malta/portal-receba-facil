@@ -1,13 +1,14 @@
-﻿using RecebaFacil.Domain.Application.Extensions;
+﻿using RecebaFacil.Domain.Core.BaseEntities;
 using RecebaFacil.Domain.Enums;
+using System;
 
 namespace RecebaFacil.Domain.Entities
 {
-    public class Contato : EntityBase<int>
+    public class Contato : LoggableEntity
     {
         private string _valor;
 
-        public int EmpresaID { get; set; }
+        public Guid EmpresaId { get; set; }
         public string Nome { get; set; }
         public string Valor
         {
@@ -17,12 +18,6 @@ namespace RecebaFacil.Domain.Entities
         public TipoContato TipoContato { get; set; }
         public bool Ativo { get; set; }
 
-        public virtual Empresa Empresa { get; private set; }
-        public Contato AdicionarEmpresa(Empresa empresa)
-        {
-            Empresa = empresa;
-            return this;
-        }
         private string FormatarValor()
         {
             switch (TipoContato)

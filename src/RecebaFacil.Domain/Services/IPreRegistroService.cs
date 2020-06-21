@@ -1,10 +1,11 @@
 ﻿
 using RecebaFacil.Domain.Entities;
+using System.Threading.Tasks;
 
 namespace RecebaFacil.Domain.Services
 {
     public interface IPreRegistroService
     {
-        int Salvar(PreRegistro preRegistro);
+        Task Salvar(PreRegistro preRegistro);
     }
 }

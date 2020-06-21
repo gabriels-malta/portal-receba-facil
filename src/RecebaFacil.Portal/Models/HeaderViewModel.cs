@@ -1,5 +1,5 @@
-﻿using RecebaFacil.Domain.Application.Constants;
-using RecebaFacil.Domain.Application.Model;
+﻿using RecebaFacil.Domain;
+using RecebaFacil.Domain.Core.Model;
 
 namespace RecebaFacil.Portal.Models
 {

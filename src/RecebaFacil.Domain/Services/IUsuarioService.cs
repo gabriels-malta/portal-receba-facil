@@ -1,11 +1,13 @@
 ﻿
 using RecebaFacil.Domain.Entities;
+using System;
+using System.Threading.Tasks;
 
 namespace RecebaFacil.Domain.Services
 {
     public interface IUsuarioService
     {
-        Usuario ObterPorId(long id);
-        Usuario BuscarPorAutenticacao(string login, string senha);
+        Task<Usuario> ObterPorId(Guid id);
+        Task NovoUsuario(Usuario usuario);
     }
 }

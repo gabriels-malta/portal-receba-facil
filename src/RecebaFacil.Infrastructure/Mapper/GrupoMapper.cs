@@ -9,7 +9,6 @@ namespace RecebaFacil.Infrastructure.Mapper
         {
             Map(x => x.Id).ToColumn("tinIdGrupo");
             Map(x => x.Nome).ToColumn("vchNome");
-            Map(x => x.Role).ToColumn("vchRole");
         }
     }
 }

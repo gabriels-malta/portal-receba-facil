@@ -1,11 +1,17 @@
 ﻿
 using RecebaFacil.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RecebaFacil.Domain.Services
 {
     public interface IContatoService
     {
-        Contato ObterPorId(int id);
-        Contato ObterPorId(int id, bool carregarEmpresa);
+        Task Atualizar(Contato contato);
+        Task Salvar(Contato contato);
+        Task<Contato> ObterPorId(Guid id);
+        Task Excluir(Guid id);
+        Task<IList<Contato>> ListarPorEmpresa(Guid empresaId);
     }
 }

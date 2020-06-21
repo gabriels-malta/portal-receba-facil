@@ -16,9 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RecebaFacil.Domain\RecebaFacil.Domain.csproj" />
     <ProjectReference Include="..\RecebaFacil.IoC\RecebaFacil.IoC.csproj" />
-    <ProjectReference Include="..\RecebaFacil.Service\RecebaFacil.Service.csproj" />
   </ItemGroup>
 
 </Project>

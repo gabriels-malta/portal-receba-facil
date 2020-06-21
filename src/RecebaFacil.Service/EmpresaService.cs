@@ -1,55 +1,30 @@
 ﻿using Microsoft.Extensions.Logging;
-using RecebaFacil.Domain.DataServices;
 using RecebaFacil.Domain.Entities;
 using RecebaFacil.Domain.Exception;
 using RecebaFacil.Domain.Services;
+using RecebaFacil.Repository.Interfaces;
 using System;
+using System.Threading.Tasks;
 
 namespace RecebaFacil.Service
 {
     public class EmpresaService : IEmpresaService
     {
-        private readonly IDataServiceEmpresa _DataServiceEmpresa;
-        private readonly IEnderedecoService _EnderecoService;
+        private readonly IRepositoryEmpresa _repositoryEmpresa;
         private readonly ILogger<IEmpresaService> _logger;
 
-        public EmpresaService(IDataServiceEmpresa dataServiceEmpresa,
-                              IEnderedecoService enderecoService,
+        public EmpresaService(IRepositoryEmpresa repositoryEmpresa,
                               ILogger<IEmpresaService> logger)
         {
-            _DataServiceEmpresa = dataServiceEmpresa;
-            _EnderecoService = enderecoService;
+            _repositoryEmpresa = repositoryEmpresa;
             _logger = logger;
         }
 
-        public Empresa ObterPorId(int id)
+        public async Task<Empresa> ObterPorId(Guid id)
         {
             try
             {
-                Empresa empresa = _DataServiceEmpresa.ObterPorId(id);
-
-                if (empresa == null)
-                    throw new RecebaFacilException("Empresa não encontrada");
-
-                return empresa;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("EmpresaService.ObterPorId", ex.Message);
-                throw new RecebaFacilException("Empresa não encontrada");
-            }
-        }
-
-        public Empresa ObterPorId(int id, bool carregarEndereco)
-        {
-            try
-            {
-                Empresa empresa = ObterPorId(id);
-
-                if (carregarEndereco)
-                    empresa.AdicionarEndereco(_EnderecoService.ObterPorEmpresa(empresaId: id));
-
-                return empresa;
+                return await _repositoryEmpresa.ObterPorId(id);
             }
             catch (Exception ex)
             {

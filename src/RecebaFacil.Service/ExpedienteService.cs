@@ -1,74 +1,86 @@
-﻿using Microsoft.Extensions.Logging;
-using RecebaFacil.Domain.DataServices;
+﻿using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.Logging;
 using RecebaFacil.Domain.Entities;
 using RecebaFacil.Domain.Exception;
 using RecebaFacil.Domain.Services;
+using RecebaFacil.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace RecebaFacil.Service
 {
     public class ExpedienteService : IExpedienteService
     {
-        private readonly IDataServiceExpediente _DataServiceExpediente;
+        private readonly IRepositoryExpediente _repositoryExpediente;
         private readonly ILogger<IExpedienteService> _logger;
 
-        public ExpedienteService(IDataServiceExpediente dataServiceExpediente,
+        public ExpedienteService(IRepositoryExpediente repositoryExpediente,
                                  ILogger<IExpedienteService> logger)
         {
-            _DataServiceExpediente = dataServiceExpediente;
+            _repositoryExpediente = repositoryExpediente;
             _logger = logger;
         }
 
-        public bool Alterar(Expediente expediente)
+        public async Task Excluir(Guid id)
         {
             try
             {
-                return _DataServiceExpediente.Alterar(expediente) > 0;
+                Expediente expediente = await _repositoryExpediente.ObterPorId(id);
+                if (expediente == null)
+                    throw new RecebaFacilException("Expediente não encontrado");
+
+                await _repositoryExpediente.Excluir(expediente);
             }
             catch (Exception ex)
             {
-                _logger.LogError("ExpedienteService.Alterar", ex.Message);
-                throw new RecebaFacilException("Erro ao alterar dados do expediente");
+                _logger.LogError("ExpedienteService.Excluir", ex.Message);
+                throw new RecebaFacilException("Erro ao exluir expediente");
             }
         }
 
-        public IEnumerable<Expediente> ObterPorEmpresa(int empresaId)
+        public async Task<IList<Expediente>> ObterPorEmpresa(Guid empresaId)
         {
             try
             {
-                return _DataServiceExpediente.ObterPorEmpresa(empresaId);
+                return await _repositoryExpediente.ObterListaPor(x => x.PontoRetiradaId == empresaId);
             }
             catch (Exception ex)
             {
                 _logger.LogError("ExpedienteService.ObterPorEmpresa", ex.Message);
-                throw new RecebaFacilException("Empresa sem expediente");
+                throw new RecebaFacilException("Erro ao obter expedientes do ponto de retirada");
             }
         }
 
-        public Expediente ObterPorId(Guid id)
+        public async Task<Expediente> ObterPorId(Guid id)
         {
             try
             {
-                return _DataServiceExpediente.ObterPorId(id);
+                return await _repositoryExpediente.ObterPorId(id);
             }
             catch (Exception ex)
             {
                 _logger.LogError("ExpedienteService.ObterPorId", ex.Message);
-                throw new RecebaFacilException("Expediente não encontrado");
+                throw new RecebaFacilException("Erro ao obter expediente");
             }
         }
 
-        public bool Salvar(Expediente expediente)
+        public async Task Salvar(Expediente expediente)
         {
             try
             {
-                return _DataServiceExpediente.Salvar(expediente) > 0;
+                IList<Expediente> expedientes = await _repositoryExpediente.ObterListaPor(x => x.PontoRetiradaId == expediente.PontoRetiradaId);
+
+                if (expedientes.Any(x => x.Equals(expediente)))
+                    throw new RecebaFacilException("Já existe um expediente para este dia da semana");
+
+                await _repositoryExpediente.Salvar(expediente);
             }
             catch (Exception ex)
             {
                 _logger.LogError("ExpedienteService.Salvar", ex.Message);
-                throw new RecebaFacilException("Erro ao gravar dados do expediente");
+                throw new RecebaFacilException("Erro ao salvar expediente");
             }
         }
     }

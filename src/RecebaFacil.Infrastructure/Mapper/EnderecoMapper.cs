@@ -15,7 +15,6 @@ namespace RecebaFacil.Infrastructure.Mapper
             Map(x => x.Municipio).ToColumn("vchMunicipio");
             Map(x => x.Uf).ToColumn("vchUf");
             Map(x => x.Observacao).ToColumn("vchObservacao");
-            Map(x => x.Principal).ToColumn("bitPrincipal");
             Map(x => x.Ativo).ToColumn("bitAtivo");
         }
     }

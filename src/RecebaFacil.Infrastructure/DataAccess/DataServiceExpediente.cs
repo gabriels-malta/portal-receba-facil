@@ -17,7 +17,7 @@ namespace RecebaFacil.Infrastructure.DataAccess
         {
             return ExecuteNonQuery("sproc_Expediente_Alterar", new
             {
-                @indIdEmpresa = expediente.PontoRetiradaID,
+                @indIdEmpresa = expediente.PontoRetiradaId,
                 @tinDiaSemana = expediente.DiaSemana,
                 @tmHoraAbertura = expediente.HoraAbertura,
                 @tmHoraEncerramento = expediente.HoraEncerramento
@@ -39,7 +39,7 @@ namespace RecebaFacil.Infrastructure.DataAccess
             return ExecuteNonQuery("sproc_Expediente_Inserir", new
             {
                 id = Guid.NewGuid(),
-                indIdEmpresa = expediente.PontoRetiradaID,
+                indIdEmpresa = expediente.PontoRetiradaId,
                 tinDiaSemana = expediente.DiaSemana,
                 tmHoraAbertura = expediente.HoraAbertura,
                 tmHoraEncerramento = expediente.HoraEncerramento

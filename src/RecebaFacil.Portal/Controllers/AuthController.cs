@@ -38,7 +38,7 @@ namespace RecebaFacil.Portal.Controllers
 
             try
             {
-                int usuarioId = _AuthService.Autenticar(model.LoginName, model.Senha);
+                Guid usuarioId = _AuthService.Autenticar(model.LoginName, model.Senha);
 
                 _httpContextService.SignIn(usuarioId);
 

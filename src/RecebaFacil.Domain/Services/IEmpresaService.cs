@@ -1,11 +1,12 @@
 ﻿
 using RecebaFacil.Domain.Entities;
+using System;
+using System.Threading.Tasks;
 
 namespace RecebaFacil.Domain.Services
 {
     public interface IEmpresaService
     {
-        Empresa ObterPorId(int id);
-        Empresa ObterPorId(int id, bool carregarEndereco);
+        Task<Empresa> ObterPorId(Guid id);
     }
 }

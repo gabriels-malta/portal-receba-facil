@@ -1,42 +1,47 @@
 ﻿using Microsoft.Extensions.Logging;
-using RecebaFacil.Domain.DataServices;
 using RecebaFacil.Domain.Entities;
 using RecebaFacil.Domain.Exception;
 using RecebaFacil.Domain.Services;
+using RecebaFacil.Repository.Interfaces;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RecebaFacil.Service
 {
     public class EnderecoService : IEnderedecoService
     {
-        private readonly IDataServiceEndereco _DataServiceEndereco;
+        private readonly IRepositoryEndereco _repositoryEndereco;
         private readonly ILogger<IEnderedecoService> _logger;
 
-        public EnderecoService(IDataServiceEndereco dataServiceEndereco, 
+        public EnderecoService(
+            IRepositoryEndereco repositoryEndereco,
             ILogger<IEnderedecoService> logger)
         {
-            _DataServiceEndereco = dataServiceEndereco;
+            _repositoryEndereco = repositoryEndereco;
             _logger = logger;
         }
 
-        public Endereco ObterPorId(int id)
+        public async Task<Endereco> ObterAtivoPorEmpresa(Guid empresaId)
         {
             try
             {
-                return _DataServiceEndereco.ObterPorId(id);
+                return await _repositoryEndereco.ObterPrimeiroPor(x => x.EmpresaId == empresaId && x.Ativo)
+                    .ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                _logger.LogError("EnderecoService.ObterPorId", ex.Message);
+
+                _logger.LogError("EnderecoService.ObterAtivoPorEmpresa", ex.Message);
                 throw new RecebaFacilException("Endereço não encontrado");
             }
         }
 
-        public Endereco ObterPorEmpresa(int empresaId)
+        public async Task<IList<Endereco>> ObterPorEmpresa(Guid empresaId)
         {
             try
             {
-                return _DataServiceEndereco.ObterEnderecoPorEmpresa(empresaId, somentePrincipal: true);
+                return await _repositoryEndereco.ObterListaPor(x => x.EmpresaId == empresaId);
             }
             catch (Exception ex)
             {
@@ -45,20 +50,31 @@ namespace RecebaFacil.Service
             }
         }
 
-        public int Salvar(Endereco endereco)
+        public async Task<Endereco> ObterPorId(Guid id)
         {
-            if (endereco.EmpresaId < 0)
-                throw new RecebaFacilException("Empresa inválida");
+            try
+            {
+                return await _repositoryEndereco.ObterPorId(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("EnderecoService.ObterAtivoPorEmpresa", ex.Message);
+                throw new RecebaFacilException("Endereço não encontrado");
+            }
+        }
 
+        public async Task Salvar(Endereco endereco)
+        {
             if (string.IsNullOrWhiteSpace(endereco.Cep) || endereco.Cep.Length > 8)
                 throw new RecebaFacilException("CEP inválida");
 
             if (string.IsNullOrWhiteSpace(endereco.Uf) || endereco.Uf.Length != 2)
                 throw new RecebaFacilException("UF inválida");
 
+            endereco.Id = Guid.NewGuid();
             try
             {
-                return _DataServiceEndereco.Salvar(endereco);
+                await _repositoryEndereco.Salvar(endereco);
             }
             catch (Exception ex)
             {

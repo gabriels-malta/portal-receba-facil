@@ -19,13 +19,13 @@ namespace RecebaFacil.Portal
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
-        {            
+        {
             services.AddScoped<IHttpContextService, HttpContextService>();
             services.AddScoped<ICacheService, CacheService>();
 
-            services.AddDependencies();
+            services.AddDependencies(Configuration);
             services.AddCookies();
-            
+
             services.AddHttpContextAccessor();
             services.AddMemoryCache();
 

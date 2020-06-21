@@ -8,22 +8,10 @@ namespace RecebaFacil.Domain.Entities
 {
     public class PontoRetirada : Empresa
     {
+        public override TipoEmpresa TipoEmpresa => TipoEmpresa.PontoRetirada;
         public IReadOnlyList<Expediente> Expediente => _expediente;
 
         private List<Expediente> _expediente = new List<Expediente>();
-
-        public PontoRetirada(string razaoSocial,
-            string nomeFantasia,
-            string cnpj)
-            : base(TipoEmpresa.PontoRetirada, razaoSocial, nomeFantasia, cnpj)
-        { }
-
-        public PontoRetirada(string razaoSocial,
-            string nomeFantasia,
-            string cnpj,
-            DateTime dataCadastro)
-            : base(TipoEmpresa.PontoRetirada, razaoSocial, nomeFantasia, cnpj, dataCadastro)
-        { }
 
         public void AdicionarExpediente(Expediente expediente)
         {

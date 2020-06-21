@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RecebaFacil.Domain.Application.Constants;
+using RecebaFacil.Domain;
 using RecebaFacil.Portal.Models;
 using RecebaFacil.Portal.Services.Interfaces;
 

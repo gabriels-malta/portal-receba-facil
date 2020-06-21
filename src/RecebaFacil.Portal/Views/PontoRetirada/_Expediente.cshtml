@@ -1,2 +1,23 @@
-﻿@model int
-<p>aba de expediente: @Model</p>
+﻿@model IEnumerable<RecebaFacil.Portal.Models.PontoRetirada.ExpedienteViewModel>
+
+<h2>Expediente</h2>
+
+<table>
+    <thead>
+        <tr>
+            <td>Dia da semana</td>
+            <td>Abertura</td>
+            <td>Fechamento</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.DiaSemana.ToString()</td>
+                <td>@item.HoraAbertura</td>
+                <td>@item.HoraEncerramento</td>
+            </tr>
+        }
+    </tbody>
+</table>

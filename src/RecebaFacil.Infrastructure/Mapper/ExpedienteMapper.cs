@@ -8,7 +8,7 @@ namespace RecebaFacil.Infrastructure.Mapper
         internal ExpedienteMapper()
         {
             Map(x => x.Id).ToColumn("uniIdExpediente");
-            Map(x => x.PontoRetiradaID).ToColumn("intIdEmpresa");
+            Map(x => x.PontoRetiradaId).ToColumn("intIdEmpresa");
             Map(x => x.DiaSemana).ToColumn("tinDiaSemana");
             Map(x => x.HoraAbertura).ToColumn("tmHoraAbertura");
             Map(x => x.HoraEncerramento).ToColumn("tmHoraEncerramento");
