@@ -18,7 +18,22 @@
         </p>
     </div>
 </div>
-<div class="row">
+
+
+
+<div id="index-minhas-encomendas"></div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $.get("@ViewBag.EncomendasUrl", function (response) {
+                $("#index-minhas-encomendas").empty().html(response);
+            });
+        });
+    </script>
+}
+
+@*<div class="row">
     <div class="col">
         <div class="card-deck mb-3 text-center">
             <div class="card mb-4 shadow-sm">
@@ -62,4 +77,4 @@
             </div>
         </div>
     </div>
-</div>
+</div>*@

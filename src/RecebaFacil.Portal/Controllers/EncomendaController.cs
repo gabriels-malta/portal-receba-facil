@@ -100,5 +100,32 @@ namespace RecebaFacil.Portal.Controllers
             }
         }
 
+        [Authorize(Roles = Roles.PONTO_RETIRADA)]
+        [Route("ponto-retirada/minhas-encomendas", Name = "Encomenda_PontoRetirada_Inicio")]
+        public async Task<IActionResult> MinhaEncomendas()
+        {
+            IList<MinhasEncomendasViewModel> model = new List<MinhasEncomendasViewModel>();
+            var encomendas = await _encomendaService.ObterPorPontoDeRetirada(_loggedUser.EmpresaId);
+
+            foreach (var item in encomendas)
+            {
+                string nomePontoVenda = await _empresaService.ObterNomeEmpresa(item.PontoRetiradaId);
+
+                model.Add(new MinhasEncomendasViewModel
+                {
+                    Id = item.Id,
+                    DataPedido = item.DataPedido,
+                    NotaFiscal = item.NotaFiscal,
+                    NumeroPedido = item.NumeroPedido,
+                    TipoMovimento = item.Historia.Max(x => x.TipoMovimento).GetDescription(),
+                    PontoVendaNome = nomePontoVenda,
+                    PontoVendaId = item.PontoVendaId,
+
+                });
+            }
+
+            return PartialView("PontoRetiriadaIndex", model);
+        }
+
     }
 }

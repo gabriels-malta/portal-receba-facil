@@ -1,17 +1,9 @@
-﻿@model IEnumerable<RecebaFacil.Portal.Models.Encomenda.EncomendaViewModel>
+﻿@model IEnumerable<RecebaFacil.Portal.Models.Encomenda.MinhasEncomendasViewModel>
 
 <div id="container-pv-encomendas">
     <div class="row">
         <div class="col">
             <h1>Minhas encomendas</h1>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col">
-            <button id="btnNovaEncomenda" class="btn btn-primary btn-lg">
-                Adicionar encomenda
-            </button>
         </div>
     </div>
 
@@ -38,7 +30,7 @@
                                 <td>@item.NumeroPedido</td>
                                 <td>@item.NotaFiscal</td>
                                 <td>@item.TipoMovimento</td>
-                                <td>@item.PontoRetiradaNome</td>
+                                <td>@item.PontoVendaNome</td>
                             </tr>
                         }
                     </tbody>
@@ -47,18 +39,3 @@
         </div>
     </div>
 </div>
-
-
-<script>
-    $(function () {
-        $("#btnNovaEncomenda").on("click", function () {
-            $.get("@ViewBag.NovaEncomedaURL", function (response) {
-                $("#container-pv-encomendas").append(response);
-                $("#modalNovaEncomenda").modal("show");
-            });
-        });
-        window.successNovaEncomenda = function successNovaEncomenda() { window.location.reload(); }
-
-        window.errorNovaEncomenda = function errorNovaEncomenda() { $("#onerror").removeClass("d-none"); }
-    });
-</script>
