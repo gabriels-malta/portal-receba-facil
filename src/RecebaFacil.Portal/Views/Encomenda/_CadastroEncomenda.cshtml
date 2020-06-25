@@ -13,8 +13,6 @@
                 <form asp-route="Encomenda_CadastrarNova" asp-antiforgery="true"
                       data-ajax="true"
                       data-ajax-method="post"
-                      data-ajax-mode="replace"
-                      data-ajax-update="#modalNovaEncomenda"
                       data-ajax-success="successNovaEncomenda"
                       data-ajax-failure="errorNovaEncomenda">
                     <div asp-validation-summary="ModelOnly"></div>
@@ -54,14 +52,3 @@
         </div>
     </div>
 </div>
-<script>
-    $(function () {
-        function successNovaEncomenda(reponse) {
-            $("#modalNovaEncomenda").modal("close");
-            $("#modalNovaEncomenda").modal("dispose");
-            window.location.reload();
-        }
-
-        function errorNovaEncomenda() { $("#onerror").removeClass("d-none"); }
-    });
-</script>

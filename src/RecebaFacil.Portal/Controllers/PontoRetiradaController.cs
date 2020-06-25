@@ -19,6 +19,8 @@ namespace RecebaFacil.Portal.Controllers
         [Route("inicio", Name = "PontoRetirada_Inicio")]
         public IActionResult Index()
         {
+            ViewBag.EncomendasUrl = Url.RouteUrl("Encomenda_PontoRetirada_Inicio");
+
             InicioViewModel model = new InicioViewModel
             {
                 NomeEmpresa = _loggedUser.Empresa,
