@@ -88,13 +88,15 @@ namespace RecebaFacil.Portal.Controllers
         {
             var expediente = await _expedienteService.ObterPorEmpresa(empresaId);
 
-            var model = expediente.Select(x => new ExpedienteViewModel
-            {
-                Id = x.Id,
-                DiaSemana = x.DiaSemana,
-                HoraAbertura = x.HoraAbertura,
-                HoraEncerramento = x.HoraEncerramento
-            }).OrderBy(x => x.DiaSemana);
+            var model = expediente
+                .OrderBy(x => (int)x.DiaSemana)
+                .Select(x => new ExpedienteViewModel
+                {
+                    Id = x.Id,
+                    DiaSemana = x.DiaSemana.ToString(),
+                    HoraAbertura = x.HoraAbertura,
+                    HoraEncerramento = x.HoraEncerramento
+                });
 
             return PartialView("_Expediente", model);
         }
