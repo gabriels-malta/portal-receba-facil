@@ -109,7 +109,7 @@ namespace RecebaFacil.Portal.Controllers
 
             foreach (var item in encomendas)
             {
-                string nomePontoVenda = await _empresaService.ObterNomeEmpresa(item.PontoVendaId);
+                string nomePontoVenda = await _empresaService.ObterNomeEmpresa(item.PontoRetiradaId);
 
                 model.Add(new MinhasEncomendasViewModel
                 {
