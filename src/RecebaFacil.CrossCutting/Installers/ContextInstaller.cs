@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RecebaFacil.Repository.ContextConfig;
 
-namespace RecebaFacil.IoC.DependencyInjection
+namespace RecebaFacil.CrossCutting.Installers
 {
     public static class ContextInstaller
     {

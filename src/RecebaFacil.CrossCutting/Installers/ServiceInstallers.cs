@@ -2,7 +2,7 @@
 using RecebaFacil.Domain.Services;
 using RecebaFacil.Service;
 
-namespace RecebaFacil.IoC.DependencyInjection
+namespace RecebaFacil.CrossCutting.Installers
 {
     public static class ServiceInstallers
     {

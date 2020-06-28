@@ -48,6 +48,9 @@ namespace RecebaFacil.Service
                 if (!await _empresaService.Existe(encomenda.PontoVendaId))
                     throw new RecebaFacilException("Ponto de Venda inválido");
 
+                if (string.IsNullOrWhiteSpace(encomenda.NumeroPedido) || string.IsNullOrWhiteSpace(encomenda.NotaFiscal))
+                    throw new RecebaFacilException("Verifique os dados e tente novamente");
+
                 encomenda.AdicionarHistoria(new EncomendaHistoria
                 {
                     Id = Guid.NewGuid(),

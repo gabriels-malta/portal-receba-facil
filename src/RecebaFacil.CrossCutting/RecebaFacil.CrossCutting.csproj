@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="DependencyInjection\SeedInstallers.cs" />
+    <Compile Remove="Installers\SeedInstallers.cs" />
     <Compile Remove="ISeedService.cs" />
     <Compile Remove="SeedHostedService.cs" />
   </ItemGroup>

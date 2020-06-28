@@ -2,7 +2,7 @@
 using RecebaFacil.Repository;
 using RecebaFacil.Repository.Interfaces;
 
-namespace RecebaFacil.IoC.DependencyInjection
+namespace RecebaFacil.CrossCutting.Installers
 {
     public static class RepositoryInstallers
     {
