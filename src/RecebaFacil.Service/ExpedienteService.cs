@@ -72,10 +72,20 @@ namespace RecebaFacil.Service
             {
                 IList<Expediente> expedientes = await _repositoryExpediente.ObterListaPor(x => x.PontoRetiradaId == expediente.PontoRetiradaId);
 
+                // validar se existe um expediente com dia da semana e horários iguais
                 if (expedientes.Any(x => x.Equals(expediente)))
                     throw new RecebaFacilException("Já existe um expediente para este dia da semana");
 
-                await _repositoryExpediente.Salvar(expediente);
+                if (Guid.Empty.Equals(expediente.Id))
+                {
+                    // não permitir salvar um dia da semana repetido
+                    if (expedientes.Any(x => x.DiaSemana == expediente.DiaSemana))
+                        throw new RecebaFacilException("Já existe um expediente para este dia da semana");
+
+                    await _repositoryExpediente.Salvar(expediente);
+                }
+                else
+                    await _repositoryExpediente.Atualizar(expediente);
             }
             catch (Exception ex)
             {

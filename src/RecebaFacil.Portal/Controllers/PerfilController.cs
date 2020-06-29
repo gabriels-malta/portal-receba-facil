@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RecebaFacil.Domain;
+using RecebaFacil.Domain.Enums;
 using RecebaFacil.Domain.Services;
 using RecebaFacil.Portal.Models.PontoRetirada;
 using RecebaFacil.Portal.Services.Interfaces;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using static RecebaFacil.Portal.Models.PontoRetirada.MeuEnderecoViewModel;
 
 namespace RecebaFacil.Portal.Controllers
 {
@@ -50,6 +52,7 @@ namespace RecebaFacil.Portal.Controllers
 
             PerfilViewModel model = new PerfilViewModel
             {
+                TipoEmpresa = empresa.TipoEmpresa.GetDescription(),
                 RazaoSocial = empresa.RazaoSocial,
                 NomeFantasia = empresa.NomeFantasia,
                 Cnpj = empresa.Cnpj,
@@ -58,7 +61,8 @@ namespace RecebaFacil.Portal.Controllers
                 Contatos = empresa.Contatos.Select(c => new ContatoViewModel
                 {
                     Id = c.Id,
-                    Valor = c.Valor
+                    Valor = c.Valor,
+                    TipoContato = c.TipoContato.GetDescription()
                 })
             };
 
@@ -68,9 +72,10 @@ namespace RecebaFacil.Portal.Controllers
         [Route("{enderecoId}/endereco", Name = "MeuPerfil_Endereco")]
         public async Task<IActionResult> MeuEndereco(Guid enderecoId)
         {
-            var endereco = await _enderedecoService.ObterAtivoPorEmpresa(enderecoId);
+            MeuEnderecoViewModel model = new MeuEnderecoViewModel();
 
-            var model = new MeuEnderecoViewModel()
+            var enderecos = await _enderedecoService.ObterPorEmpresa(enderecoId);
+            model.Configure(enderecos.Select(endereco => new EnderecoViewModel()
             {
                 EnderecoId = endereco.Id,
                 Cep = endereco.Cep,
@@ -79,10 +84,13 @@ namespace RecebaFacil.Portal.Controllers
                 Municipio = endereco.Municipio,
                 Uf = endereco.Uf,
                 Observacao = endereco.Observacao,
-            };
+                Ativo = endereco.Ativo
+            }));
+
             return PartialView("_Endereco", model);
         }
 
+        [Authorize(Roles = Roles.PONTO_RETIRADA)]
         [Route("{empresaId}/expediente", Name = "MeuPerfil_Expediente")]
         public async Task<IActionResult> MeuExpediente(Guid empresaId)
         {
@@ -93,12 +101,36 @@ namespace RecebaFacil.Portal.Controllers
                 .Select(x => new ExpedienteViewModel
                 {
                     Id = x.Id,
-                    DiaSemana = x.DiaSemana.ToString(),
-                    HoraAbertura = x.HoraAbertura,
-                    HoraEncerramento = x.HoraEncerramento
+                    DiaSemana = x.DiaSemana.GetDescription(),
+                    HoraAbertura = x.HoraAbertura.ToString(@"hh\:mm"),
+                    HoraEncerramento = x.HoraEncerramento.ToString(@"hh\:mm")
                 });
 
             return PartialView("_Expediente", model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = Roles.PONTO_RETIRADA)]
+        [Route("expediente/novo", Name = "MeuPerfil_Expediente_Gravar")]
+        public async Task<IActionResult> AtualizarExpediente(ExpedienteViewModel model)
+        {
+            try
+            {
+                await _expedienteService.Salvar(new Domain.Entities.Expediente
+                {
+                    PontoRetiradaId = _loggedUser.EmpresaId,
+                    DiaSemana = Enum.Parse<DiaSemana>(model.DiaSemana),
+                    HoraAbertura = TimeSpan.Parse(model.HoraAbertura),
+                    HoraEncerramento = TimeSpan.Parse(model.HoraEncerramento),
+                    Id = model.Id
+                });
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
