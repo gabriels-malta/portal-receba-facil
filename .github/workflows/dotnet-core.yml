@@ -22,5 +22,5 @@ jobs:
       run: dotnet build RecebaFacil.Portal.csproj --configuration Release
       working-directory: ${{env.dir_portal}}
     - name: Test
-      run: dotnet test RecebaFacil.Tests.csproj --no-build --verbosity normal
+      run: dotnet test RecebaFacil.Tests.csproj --verbosity quiet
       working-directory: ${{env.dir_tests}}
