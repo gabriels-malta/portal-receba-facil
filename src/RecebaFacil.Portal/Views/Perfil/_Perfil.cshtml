@@ -1,33 +1,35 @@
 ﻿@model RecebaFacil.Portal.Models.PontoRetirada.PerfilViewModel
 
 <div class="row">
-    <div class="col-12 mt-3 mb-3 text-center">
-        <h3>Dados da Empresa</h3>
-    </div>
     <div class="col">
-        <p>
-            <b>Nome fantasia</b>&nbsp;@Model.NomeFantasia
-        </p>
-        <p>
-            <b>Razão social</b>&nbsp;@Model.RazaoSocial
-        </p>
-        <p>
-            <b>CPNJ</b>&nbsp;@Model.Cnpj
-        </p>
-        <p>
-            Parceiro desde: @Model.DataCadastro.ToShortDateString()
-        </p>
-    </div>
-    @if (Model.Contatos.Any())
-    {
-        <div class="col">
-            <h3>Contatos</h3>
-            <ul class="list-group list-group-flush">
-                @foreach (var item in Model.Contatos)
+        <div class="card border-top-0" style="border-top-left-radius: unset; border-top-right-radius: unset">
+            <div class="card-body">
+                <h4 class="card-title">@Model.RazaoSocial</h4>
+                <h5 class="card-subtitle text-muted d-inline-block">@Model.TipoEmpresa</h5>
+                <label class="text-muted small ml-3">cadastrado em @Model.DataCadastro.ToShortDateString()</label>
+
+                <p class="mt-2 mb-0">
+                    <span class="text-muted small">Nome Fantasia</span><br />
+                    @Model.NomeFantasia
+                </p>
+                <p>
+                    <span class="text-muted small">CPNJ</span><br />
+                    @Model.Cnpj
+                </p>
+
+                @if (Model.Contatos.Any())
                 {
-                    <li class="list-group-item">@item.Valor</li>
+                    <h6>Contatos</h6>
+                    @foreach (var item in Model.Contatos)
+                    {
+                        <p class="ml-3 mb-0">
+                            <span class="text-muted small">@item.TipoContato</span><br />
+                            @item.Valor
+                        </p>
+                    }
+
                 }
-            </ul>
+            </div>
         </div>
-    }
+    </div>
 </div>

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RecebaFacil.IoC.DependencyInjection;
+using RecebaFacil.CrossCutting.Installers;
 
-namespace RecebaFacil.IoC
+namespace RecebaFacil.CrossCutting
 {
     public class DependencyInjectionResolver
     {

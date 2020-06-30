@@ -1,4 +1,5 @@
 ﻿using RecebaFacil.Domain.Core.BaseEntities;
+using RecebaFacil.Domain.Enums;
 using RecebaFacil.Domain.Exception;
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -9,7 +10,7 @@ namespace RecebaFacil.Domain.Entities
     {
         public Guid Id { get; set; }
         public Guid PontoRetiradaId { get; set; }
-        public DayOfWeek DiaSemana { get; set; }
+        public DiaSemana DiaSemana { get; set; }
         public TimeSpan HoraAbertura { get; set; }
         public TimeSpan HoraEncerramento { get; set; }
 
@@ -23,7 +24,7 @@ namespace RecebaFacil.Domain.Entities
 
         public void ValidarDiaSemana()
         {
-            if (!Enum.IsDefined(typeof(DayOfWeek), DiaSemana))
+            if (!Enum.IsDefined(typeof(DiaSemana), DiaSemana))
                 throw new RecebaFacilException("Dia da semana inválido");
         }
 
@@ -32,7 +33,8 @@ namespace RecebaFacil.Domain.Entities
             if (other == null)
                 return false;
 
-            return PontoRetiradaId == other.PontoRetiradaId && DiaSemana == other.DiaSemana;
+            return DiaSemana == other.DiaSemana
+                && HoraAbertura.CompareTo(HoraEncerramento) == 0;
         }
     }
 }

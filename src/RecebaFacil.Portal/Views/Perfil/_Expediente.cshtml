@@ -1,36 +1,138 @@
 ﻿@model IEnumerable<RecebaFacil.Portal.Models.PontoRetirada.ExpedienteViewModel>
 
 <div class="row">
-    <div class="col-12 mt-3 mb-3 text-center">
-        <h3>Expedientes</h3>
-    </div>
     <div class="col">
-        <div class="table-responsive">
-            <table class="table table-borderless">
-                <thead>
-                    <tr class="text-center">
-                        <th>Dia da semana</th>
-                        <th>Abertura</th>
-                        <th>Fechamento</th>
-                        <th>&nbsp;</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr class="text-center">
-                            <td>@item.DiaSemana</td>
-                            <td>@item.HoraAbertura</td>
-                            <td>@item.HoraEncerramento</td>
-                            <td>
-                                <a href="#" title="Editar" aria-label="editar expediente">
-                                    <i class="fa fa-edit"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+        <div class="card border-top-0" style="border-top-left-radius: unset; border-top-right-radius: unset">
+            <div class="card-body">
+                <h4 class="card-title mb-0">Expediente</h4>
+                <label class="card-subtitle text-muted small mb-3">Mantenha seu horário de funcionamento atualizado</label>
+                <div id="container-expediente" class="row">
+
+                    <div class="col">
+                        <table class="table table-sm table-borderless" style="max-width: 36rem;">
+                            <thead>
+                                <tr class="text-center">
+                                    <th>Dia da semana</th>
+                                    <th>Abertura</th>
+                                    <th>Fechamento</th>
+                                    <th>&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr class="text-center" data-href="@item.Id">
+                                        <td>@item.DiaSemana</td>
+                                        <td>@item.HoraAbertura</td>
+                                        <td>@item.HoraEncerramento</td>
+                                        <td>
+                                            <a class="linkEditar" href="#/@item.Id" data-row="@item.Id" title="Editar" aria-label="editar expediente">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col">
+                        <form class="invisible" method="post" asp-route="MeuPerfil_Expediente_Gravar">
+                            <input type="hidden" name="Id" value="" />
+                            <div class="form-group">
+                                <label class="col-form-label">Dia da Semana</label>
+                                <select class="form-control" name="DiaSemana"></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label">Hora de abertura</label>
+                                <input type="time" class="form-control" name="HoraAbertura" />
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label">Hora de encerramento</label>
+                                <input type="time" class="form-control" name="HoraEncerramento" />
+                            </div>
+                            <div class="fa-pull-right">
+                                <button type="button" class="btn btn-outline-secondary btn-cancelar">Cancelar</button>
+                                <button type="button" class="btn btn-primary btn-salvar">Salvar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+<script>
+    (function () {
+        const semana = [
+            { value: 0, text: "" },
+            { value: 1, text: "Segunda-feira" },
+            { value: 2, text: "Terça-feira" },
+            { value: 3, text: "Quarta-feira" },
+            { value: 4, text: "Quinta-feira" },
+            { value: 5, text: "Sexta-feira" },
+            { value: 6, text: "Sábado" },
+            { value: 7, text: "Domingo" }
+        ];
+        const $container = $("#container-expediente");
+        const arrLinkEditar = $container.find(".linkEditar");
+        const $form = $container.find("form"),
+            $Id = $form.find("input[name='Id']"),
+            $ddlDiaSemana = $form.find("select[name='DiaSemana']"),
+            $txtHoraAbertura = $form.find("input[name='HoraAbertura']"),
+            $txtHoraEncerramento = $form.find("input[name='HoraEncerramento']"),
+            $btnSalvar = $form.find("button.btn-salvar"),
+            $btnCancelar = $form.find("button.btn-cancelar");
+
+        $ddlDiaSemana.empty();
+        semana.forEach(item => { $ddlDiaSemana.append(`<option value="${item.value}">${item.text}</option>`); });
+
+        arrLinkEditar.each((index, elem) => {
+            elem.addEventListener("click", function () {
+                const href = $(this).data("row"),
+                    linha = $container.find(`tbody tr[data-href='${href}']`),
+                    dia = linha.find("td:nth-of-type(1)").text();
+
+                $Id.val(href);
+                $ddlDiaSemana.val(semana.find(d => d.text === dia, this).value);
+                $txtHoraAbertura.val(linha.find("td:nth-of-type(2)").text());
+                $txtHoraEncerramento.val(linha.find("td:nth-of-type(3)").text());
+                $form.removeClass("invisible");
+            }, false);
+        });
+
+        $btnCancelar.on("click", function () {
+            $Id.val("");
+            $ddlDiaSemana.removeClass("required").val(0);
+            $txtHoraAbertura.removeClass("required").val("");
+            $txtHoraEncerramento.removeClass("required").val("");
+            $form.addClass("invisible");
+        });
+
+        $btnSalvar.on("click", function () {
+            const valDiaSemana = $ddlDiaSemana.val(),
+                valHoraAbertura = $txtHoraAbertura.val(),
+                valHoraEncerramento = $txtHoraEncerramento.val();
+
+            if (!valDiaSemana) { $ddlDiaSemana.addClass("required"); return; }
+            if (!valHoraAbertura) { $txtHoraAbertura.addClass("required"); return; }
+            if (!valHoraEncerramento) { $txtHoraEncerramento.addClass("required"); return; }
+            if (valHoraAbertura > valHoraEncerramento) { alert("Horário inválido"); return; }
+
+            $.ajax({
+                type: "POST",
+                url: $form.attr("action"),
+                data: {
+                    DiaSemana: valDiaSemana,
+                    HoraAbertura: valHoraAbertura,
+                    HoraEncerramento: valHoraEncerramento,
+                    Id: $Id.val()
+                },
+                success: function () {
+                    alert("listo");
+                    $("#expediente-tab").click();
+                },
+                error: function (x, m, s) { alert(s); }
+            })
+        });
+    })();
+</script>

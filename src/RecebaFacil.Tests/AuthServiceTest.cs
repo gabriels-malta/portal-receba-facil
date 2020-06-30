@@ -14,8 +14,8 @@ namespace RecebaFacil.Tests
     {
         private IAuthService _authService;
 
-        private Mock<IRepositoryUsuario> mockRepositoryUsuario = new Mock<IRepositoryUsuario>();
-        private Mock<ISecurityService> mockSecurityService = new Mock<ISecurityService>();
+        private readonly Mock<IRepositoryUsuario> mockRepositoryUsuario = new Mock<IRepositoryUsuario>();
+        private readonly Mock<ISecurityService> mockSecurityService = new Mock<ISecurityService>();
 
         public AuthServiceTest()
         {

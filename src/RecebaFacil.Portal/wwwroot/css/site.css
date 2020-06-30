@@ -90,3 +90,7 @@ body {
 a:hover {
     text-decoration: none;
 }
+
+.required {
+    border: 1px solid red;
+}

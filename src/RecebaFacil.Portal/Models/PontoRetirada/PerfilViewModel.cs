@@ -11,11 +11,6 @@ namespace RecebaFacil.Portal.Models.PontoRetirada
         public string NomeFantasia { get; internal set; }
         public string RazaoSocial { get; internal set; }
         public IEnumerable<ContatoViewModel> Contatos { get; internal set; }
-    }
-
-    public class ContatoViewModel
-    {
-        public Guid Id { get; set; }
-        public string Valor { get; set; }
+        public string TipoEmpresa { get; internal set; }
     }
 }

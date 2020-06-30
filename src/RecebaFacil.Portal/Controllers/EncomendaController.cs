@@ -124,7 +124,7 @@ namespace RecebaFacil.Portal.Controllers
                 });
             }
 
-            return PartialView("PontoRetiriadaIndex", model);
+            return PartialView("PontoRetiradaIndex", model);
         }
 
     }

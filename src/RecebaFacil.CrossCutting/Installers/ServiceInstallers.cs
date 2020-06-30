@@ -2,14 +2,13 @@
 using RecebaFacil.Domain.Services;
 using RecebaFacil.Service;
 
-namespace RecebaFacil.IoC.DependencyInjection
+namespace RecebaFacil.CrossCutting.Installers
 {
     public static class ServiceInstallers
     {
         public static void Configure(IServiceCollection services)
         {
             services.AddScoped<ISecurityService, SecurityService>();
-            services.AddScoped<IEnumService, EnumService>();
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IGrupoService, GrupoService>();

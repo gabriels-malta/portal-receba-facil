@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RecebaFacil.IoC;
+using RecebaFacil.CrossCutting;
 
 namespace RecebaFacil.Portal.Extensions
 {
