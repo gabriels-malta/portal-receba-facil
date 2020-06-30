@@ -1,4 +1,5 @@
 ﻿using RecebaFacil.Domain.Entities;
+using RecebaFacil.Domain.Enums;
 using RecebaFacil.Domain.Exception;
 using System;
 using System.Globalization;
@@ -19,12 +20,12 @@ namespace RecebaFacil.Tests
             {
                 Id = id,
                 PontoRetiradaId = empresaId,
-                DiaSemana = DayOfWeek.Monday,
+                DiaSemana = DiaSemana.Terca,
                 HoraAbertura = abertura,
                 HoraEncerramento = encerramento
             };
 
-            Assert.Equal(DayOfWeek.Monday, Enum.Parse<DayOfWeek>(expediente.DiaSemana.ToString()));
+            Assert.Equal(DiaSemana.Terca, Enum.Parse<DiaSemana>(expediente.DiaSemana.ToString()));
         }
 
         [Fact]
@@ -39,7 +40,7 @@ namespace RecebaFacil.Tests
             {
                 Id = id,
                 PontoRetiradaId = empresaId,
-                DiaSemana = DayOfWeek.Monday,
+                DiaSemana = DiaSemana.Segunda,
                 HoraAbertura = abertura,
                 HoraEncerramento = encerramento
             };
@@ -63,7 +64,7 @@ namespace RecebaFacil.Tests
             {
                 Id = id,
                 PontoRetiradaId = empresaId,
-                DiaSemana = (DayOfWeek)diaSemana,
+                DiaSemana = (DiaSemana)diaSemana,
                 HoraAbertura = abertura,
                 HoraEncerramento = encerramento
             };
