@@ -5,7 +5,6 @@ using RecebaFacil.Domain.Services;
 using RecebaFacil.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace RecebaFacil.Service
@@ -14,15 +13,12 @@ namespace RecebaFacil.Service
     {
         private readonly IRepositoryEmpresa _repositoryEmpresa;
         private readonly ILogger<IEmpresaService> _logger;
-        private readonly IContatoService _contatoService;
 
         public EmpresaService(IRepositoryEmpresa repositoryEmpresa,
-                              ILogger<IEmpresaService> logger,
-                              IContatoService contatoService)
+                              ILogger<IEmpresaService> logger)
         {
             _repositoryEmpresa = repositoryEmpresa;
             _logger = logger;
-            _contatoService = contatoService;
         }
 
         public async Task<string> ObterNomeEmpresa(Guid empresaId)
@@ -41,7 +37,6 @@ namespace RecebaFacil.Service
             try
             {
                 Empresa empresa = await _repositoryEmpresa.ObterPorId(id);
-                empresa.Contatos = await _contatoService.ListarPorEmpresa(id);
 
                 return empresa;
             }

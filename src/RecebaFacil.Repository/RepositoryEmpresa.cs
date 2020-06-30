@@ -13,5 +13,13 @@ namespace RecebaFacil.Repository
         public RepositoryEmpresa(RFContext context) : base(context)
         {
         }
+
+        public async override ValueTask<Empresa> ObterPorId(Guid id, CancellationToken cancellationToken = default)
+        {
+            return await _context.Empresa
+                .Include(x => x.Contatos)
+                .FirstAsync(x => x.Id == id, cancellationToken)
+                .ConfigureAwait(false);
+        }
     }
 }

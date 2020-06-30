@@ -34,8 +34,6 @@ namespace RecebaFacil.Service
             try
             {
                 var usuario = await _repositoryUsuario.ObterPorId(id);
-                usuario.Grupo = await _grupoService.ObterPorId(usuario.GrupoId);
-                usuario.Empresa = await _empresaService.ObterPorId(usuario.EmpresaId);
 
                 return usuario;
             }
