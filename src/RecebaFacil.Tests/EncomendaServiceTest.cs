@@ -52,6 +52,10 @@ namespace RecebaFacil.Tests
                 Assert.Equal(
                     encomenda.Id,
                     encomenda.Historia.ElementAt(0).EncomendaId);
+
+                Assert.Equal(
+                    TipoMovimento.EsteiraIniciada,
+                    encomenda.Historia.ElementAt(0).TipoMovimento);
             });
 
         }

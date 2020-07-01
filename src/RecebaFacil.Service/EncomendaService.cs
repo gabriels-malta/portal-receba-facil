@@ -70,12 +70,10 @@ namespace RecebaFacil.Service
 
         public async Task Movimentar(EncomendaHistoria historia)
         {
-            Encomenda encomenda = await _repositoryEncomenda.ObterPorId(historia.EncomendaId);
-            if (encomenda == null)
+            if (!await _repositoryEncomenda.Existe(x => x.Id == historia.EncomendaId))
                 throw new RecebaFacilException("Encomenda não encccontrada");
 
-            IList<EncomendaHistoria> movimentos = await _repositoryHistoria
-                .ObterListaPor(x => x.EncomendaId == historia.EncomendaId);
+            IList<EncomendaHistoria> movimentos = await _repositoryHistoria.ObterListaPor(x => x.EncomendaId == historia.EncomendaId);
 
             TipoMovimento ultimoMovimento = movimentos.Max(x => x.TipoMovimento);
 
