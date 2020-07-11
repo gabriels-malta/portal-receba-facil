@@ -8,9 +8,10 @@ namespace RecebaFacil.Domain.Services
 {
     public interface IEncomendaService
     {
-        Task Salvar(Encomenda encomenda);        
+        Task<Encomenda> ObterPorId(Guid id);
+        Task<Guid> Salvar(Encomenda encomenda);        
         Task<IList<Encomenda>> ObterPorPontoVenda(Guid pontoVendaId);
         Task<IList<Encomenda>> ObterPorPontoDeRetirada(Guid pontoRetiradaId);
-        Task Movimentar(EncomendaHistoria historia);
+        Task Movimentar(Guid encomendaId);
     }
 }
