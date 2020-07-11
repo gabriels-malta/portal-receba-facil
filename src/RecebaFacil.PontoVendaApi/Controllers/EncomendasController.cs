@@ -13,12 +13,12 @@ namespace RecebaFacil.WebApi.Controllers
     [ApiController]
     [Produces("application/json")]
     [Route("/api/ponto-venda/{empresaId}/encomendas")]
-    public class PontoVendaEncomendasController : ControllerBase
+    public class EncomendasController : ControllerBase
     {
         private readonly IEncomendaService _encomendaService;
-        private readonly ILogger<PontoVendaEncomendasController> _logger;
-        public PontoVendaEncomendasController(IEncomendaService encomendaService,
-                                              ILogger<PontoVendaEncomendasController> logger)
+        private readonly ILogger<EncomendasController> _logger;
+        public EncomendasController(IEncomendaService encomendaService,
+                                              ILogger<EncomendasController> logger)
         {
             _encomendaService = encomendaService;
             _logger = logger;
@@ -47,7 +47,8 @@ namespace RecebaFacil.WebApi.Controllers
         [HttpGet("{encomendaId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EncomendaResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetById([FromRoute] string empresaId, [FromRoute] Guid encomendaId)
+        public async Task<IActionResult> GetById([FromRoute] string empresaId,
+                                                 [FromRoute] Guid encomendaId)
         {
             if (Guid.TryParse(empresaId, out Guid guidId))
             {
@@ -73,7 +74,8 @@ namespace RecebaFacil.WebApi.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Post([FromRoute] string empresaId, [FromBody] EncomendaRequest model)
+        public async Task<IActionResult> Post([FromRoute] string empresaId,
+                                              [FromBody] EncomendaRequest model)
         {
             try
             {
@@ -101,11 +103,11 @@ namespace RecebaFacil.WebApi.Controllers
         [HttpPatch("{encomendaId:guid}/movimentar")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Patch([FromRoute] Guid encomendaId)
+        public async Task<IActionResult> Patch([FromRoute] string empresaId, [FromRoute] Guid encomendaId)
         {
             try
             {
-                await _encomendaService.Movimentar(encomendaId);
+                await _encomendaService.MovimentarPorPontoVenda(encomendaId, Guid.Parse(empresaId));
 
                 return Ok();
             }

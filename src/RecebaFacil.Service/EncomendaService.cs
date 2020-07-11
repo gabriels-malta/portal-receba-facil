@@ -68,13 +68,13 @@ namespace RecebaFacil.Service
             }
         }
 
-        public async Task Movimentar(Guid encomendaId)
+        public async Task MovimentarPorPontoVenda(Guid encomendaId, Guid pontoVendaId)
         {
+            if (!await _repositoryEncomenda.Existe(x => x.PontoVendaId == pontoVendaId)) throw new RecebaFacilException("Operação inválida para este ponto de venda");
+
             IList<EncomendaHistoria> movimentos = await _repositoryHistoria.ObterListaPor(x => x.EncomendaId == encomendaId);
 
-            if (!movimentos.Any())
-                throw new RecebaFacilException("Encomenda não encontrada");
-
+            if (!movimentos.Any()) throw new RecebaFacilException("Encomenda não encontrada");
 
             EncomendaHistoria historia = new EncomendaHistoria
             {
@@ -83,12 +83,10 @@ namespace RecebaFacil.Service
                 DataCadastro = DateTime.Now
             };
 
-            TipoMovimento ultimoMovimento = movimentos.Max(x => x.TipoMovimento);
-            historia.DefinirProximoMovimento(ultimoMovimento);
+            historia.DefinirProximoMovimento(movimentoAtual: movimentos.ElementAt(0).TipoMovimento);
 
             await _repositoryHistoria.Salvar(historia);
         }
-
 
         public async Task<Encomenda> ObterPorId(Guid id)
         {

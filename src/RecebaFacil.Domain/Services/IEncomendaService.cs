@@ -12,6 +12,6 @@ namespace RecebaFacil.Domain.Services
         Task<Guid> Salvar(Encomenda encomenda);        
         Task<IList<Encomenda>> ObterPorPontoVenda(Guid pontoVendaId);
         Task<IList<Encomenda>> ObterPorPontoDeRetirada(Guid pontoRetiradaId);
-        Task Movimentar(Guid encomendaId);
+        Task MovimentarPorPontoVenda(Guid encomendaId, Guid pontoVendaId);
     }
 }
