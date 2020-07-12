@@ -1,4 +1,4 @@
-name: .NET Core
+name: CI Master
 
 on:
   pull_request:
