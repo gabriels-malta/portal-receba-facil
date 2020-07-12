@@ -1,4 +1,4 @@
-name: .NET Core
+name: CI showroom
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
     - name: Install dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build  RecebaFacil.Portal.csproj --configuration Release --no-restore
+      run: dotnet build RecebaFacil.Portal.csproj --configuration Release --no-restore
       working-directory: ${{env.dir_portal}}
     - name: Test
       run: dotnet test RecebaFacil.Tests.csproj --no-restore --verbosity minimal
