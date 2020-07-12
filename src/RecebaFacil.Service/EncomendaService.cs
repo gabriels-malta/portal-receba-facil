@@ -38,14 +38,14 @@ namespace RecebaFacil.Service
             return await _repositoryEncomenda.ObterListaPor(x => x.PontoRetiradaId == pontoRetiradaId);
         }
 
-        public async Task Salvar(Encomenda encomenda)
+        public async Task<Guid> Salvar(Encomenda encomenda)
         {
             try
             {
-                if (!await _empresaService.Existe(encomenda.PontoRetiradaId))
+                if (!await _empresaService.ExistePontoRetirada(encomenda.PontoRetiradaId))
                     throw new RecebaFacilException("Ponto de Retirada inválido");
 
-                if (!await _empresaService.Existe(encomenda.PontoVendaId))
+                if (!await _empresaService.ExistePontoVenda(encomenda.PontoVendaId))
                     throw new RecebaFacilException("Ponto de Venda inválido");
 
                 if (string.IsNullOrWhiteSpace(encomenda.NumeroPedido) || string.IsNullOrWhiteSpace(encomenda.NotaFiscal))
@@ -59,7 +59,7 @@ namespace RecebaFacil.Service
                     TipoMovimento = TipoMovimento.EsteiraIniciada
                 });
 
-                await _repositoryEncomenda.Salvar(encomenda);
+                return await _repositoryEncomenda.Salvar(encomenda);
             }
             catch (Exception ex)
             {
@@ -68,25 +68,29 @@ namespace RecebaFacil.Service
             }
         }
 
-        public async Task Movimentar(EncomendaHistoria historia)
+        public async Task MovimentarPorPontoVenda(Guid encomendaId, Guid pontoVendaId)
         {
-            Encomenda encomenda = await _repositoryEncomenda.ObterPorId(historia.EncomendaId);
-            if (encomenda == null)
-                throw new RecebaFacilException("Encomenda não encccontrada");
+            if (!await _repositoryEncomenda.Existe(x => x.PontoVendaId == pontoVendaId)) throw new RecebaFacilException("Operação inválida para este ponto de venda");
 
-            IList<EncomendaHistoria> movimentos = await _repositoryHistoria
-                .ObterListaPor(x => x.EncomendaId == historia.EncomendaId);
+            IList<EncomendaHistoria> movimentos = await _repositoryHistoria.ObterListaPor(x => x.EncomendaId == encomendaId);
 
-            TipoMovimento ultimoMovimento = movimentos.Max(x => x.TipoMovimento);
+            if (!movimentos.Any()) throw new RecebaFacilException("Encomenda não encontrada");
 
-            if (historia.TipoMovimento.CompareTo(ultimoMovimento) < 0)
-                throw new RecebaFacilException("Movimento inválido");
+            EncomendaHistoria historia = new EncomendaHistoria
+            {
+                Id = Guid.NewGuid(),
+                EncomendaId = encomendaId,
+                DataCadastro = DateTime.Now
+            };
 
-            if (movimentos.Any(x => x.Equals(historia)))
-                throw new RecebaFacilException("Movimento já cadastrado");
+            historia.DefinirProximoMovimento(movimentoAtual: movimentos.ElementAt(0).TipoMovimento);
 
-            historia.Id = Guid.NewGuid();
             await _repositoryHistoria.Salvar(historia);
+        }
+
+        public async Task<Encomenda> ObterPorId(Guid id)
+        {
+            return await _repositoryEncomenda.ObterPorId(id);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace RecebaFacil.Repository.Interfaces
     public interface IRepositoryBase<TEntity>
         where TEntity : class, IEntityBase
     {
-        Task Salvar(TEntity entity);
+        Task<Guid> Salvar(TEntity entity);
 
         Task Atualizar(TEntity entity);
 

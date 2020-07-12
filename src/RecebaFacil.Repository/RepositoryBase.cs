@@ -47,39 +47,35 @@ namespace RecebaFacil.Repository
             return await _context.Set<TEntity>()
                 .Where(expression)
                 .AsNoTracking()
-                .ToListAsync(cancellationToken)
-                .ConfigureAwait(false);
+                .ToListAsync(cancellationToken);
         }
 
         public virtual async ValueTask<TEntity> ObterPorId(Guid id, CancellationToken cancellationToken = default)
         {
-            return await _context.Set<TEntity>().FindAsync(id)
-                .ConfigureAwait(false);
+            return await _context.Set<TEntity>().FindAsync(id);
         }
 
         public async Task<TEntity> ObterPrimeiroPor(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken = default)
         {
-            return await _context.Set<TEntity>().FirstOrDefaultAsync(expression, cancellationToken).ConfigureAwait(false);
+            return await _context.Set<TEntity>().FirstOrDefaultAsync(expression, cancellationToken);
         }
 
         public virtual async Task<IList<TEntity>> ObterTodos(CancellationToken cancellationToken = default)
         {
             return await _context.Set<TEntity>()
                 .AsNoTracking()
-                .ToListAsync(cancellationToken)
-                .ConfigureAwait(false);
+                .ToListAsync(cancellationToken);
         }
 
-        public async Task Salvar(TEntity entity)
+        public async Task<Guid> Salvar(TEntity entity)
         {
             await _context
                 .Set<TEntity>()
-                .AddAsync(entity)
-                .ConfigureAwait(false);
+                .AddAsync(entity);
 
-            await _context
-                .SaveChangesAsync()
-                .ConfigureAwait(false);
+            await _context.SaveChangesAsync();
+
+            return entity.Id;
         }
     }
 }

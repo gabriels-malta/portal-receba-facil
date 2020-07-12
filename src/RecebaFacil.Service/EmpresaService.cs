@@ -30,7 +30,9 @@ namespace RecebaFacil.Service
             return string.Empty;
         }
 
-        public async Task<bool> Existe(Guid id) => await _repositoryEmpresa.Existe(x => x.Id == id);
+        public async Task<bool> ExistePontoVenda(Guid id) => await _repositoryEmpresa.Existe(x => x.Id == id && x.TipoEmpresa == Domain.Enums.TipoEmpresa.PontoVenda);
+        public async Task<bool> ExistePontoRetirada(Guid id) => await _repositoryEmpresa.Existe(x => x.Id == id && x.TipoEmpresa == Domain.Enums.TipoEmpresa.PontoRetirada);
+
 
         public async Task<Empresa> ObterPorId(Guid id)
         {

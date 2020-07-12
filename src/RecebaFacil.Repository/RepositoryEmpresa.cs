@@ -19,7 +19,7 @@ namespace RecebaFacil.Repository
             return await _context.Empresa
                 .Include(x => x.Contatos)
                 .FirstAsync(x => x.Id == id, cancellationToken)
-                .ConfigureAwait(false);
+                ;
         }
     }
 }

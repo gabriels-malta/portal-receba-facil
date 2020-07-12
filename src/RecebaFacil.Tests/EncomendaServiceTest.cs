@@ -24,7 +24,11 @@ namespace RecebaFacil.Tests
         public void Deve_Salvar_uma_Nova_Encomenda()
         {
             mockEmpresaService
-                .Setup(x => x.Existe(It.IsAny<Guid>()))
+                .Setup(x => x.ExistePontoRetirada(It.IsAny<Guid>()))
+                .ReturnsAsync(true);
+
+            mockEmpresaService
+                .Setup(x => x.ExistePontoVenda(It.IsAny<Guid>()))
                 .ReturnsAsync(true);
 
             mockRepositoryEncomenda
@@ -52,6 +56,10 @@ namespace RecebaFacil.Tests
                 Assert.Equal(
                     encomenda.Id,
                     encomenda.Historia.ElementAt(0).EncomendaId);
+
+                Assert.Equal(
+                    TipoMovimento.EsteiraIniciada,
+                    encomenda.Historia.ElementAt(0).TipoMovimento);
             });
 
         }
