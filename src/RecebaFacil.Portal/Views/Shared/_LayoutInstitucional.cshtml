@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portal Receba Fácil</title>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/style.css" rel="stylesheet" />
+</head>
+<body>
+    <header class="container-fluid">
+        <nav class="navbar navbar-expand-md navbar-light">
+            <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                <img src="~/image/receba-facil.png" alt="Logo da empresa" class="logo-nav">
+            </a>
+            <button class="navbar-toggler menu-nav" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-controller="Home" asp-action="Cadastrar" class="nav">cadastre-se</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav" href="#">quem somos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav" href="#">contato</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" class="container mb-3">
+        @RenderBody()
+    </main>
+
+    <footer class="border-top footer text-muted pt-5 pb-5">
+        <div class="container text-center">&copy; 2020 - Portal Receba Fácil</div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/popper/umd/popper.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/lib/mask/jquery.mask.min.js"></script>
+
+    <script>
+        $(function () {
+            function initScroll() {
+                const linksInternos = document.querySelectorAll(".js-option a[href^='#'");
+
+                function scrollToSection(event) {
+                    event.preventDefault();
+                    const href = event.currentTarget.getAttribute('href');
+                    const div = document.querySelector(href);
+                    div.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                    });
+                }
+                linksInternos.forEach((link) => {
+                    link.addEventListener("click", scrollToSection);
+                });
+            }
+
+            initScroll();
+
+
+            const divs = document.querySelectorAll(".js-left-animation, .js-right-animation");
+            const windowMetade = window.innerHeight * 0.6;
+
+            function animaScroll() {
+                divs.forEach((div) => {
+                    const divTop = div.getBoundingClientRect().top;
+                    const isDivVisible = (divTop - windowMetade) < 0;
+                    if (isDivVisible) {
+                        div.classList.add("ativo");
+                    }
+                })
+            }
+
+            window.addEventListener("scroll", animaScroll)
+        });
+    </script>
+
+    @RenderSection("Scripts", false)
+</body>
+</html>

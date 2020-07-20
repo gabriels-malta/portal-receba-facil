@@ -1,0 +1,114 @@
+﻿@model RecebaFacil.Portal.Models.Home.CadastrarViewModel
+@{
+    Layout = "_LayoutInstitucional";
+}
+
+<div id="container-cadastrar" class="position-relative m-auto p-5">
+
+
+    <h2 class="mb-3x">Faça seu pré-cadastro e entraremos em contato</h2>
+    <form asp-controller="Home" asp-action="Cadastrar" asp-antiforgery="true"
+          data-ajax="true"
+          data-ajax-method="post"
+          data-ajax-mode="replace"
+          data-ajax-update="#container-cadastrar"
+          data-ajax-success="success"
+          data-ajax-failure="error"
+          data-ajax-antiforgery="true">
+        <div asp-validation-summary="ModelOnly"></div>
+
+        <div class="form-row">
+            <div class="col-12">
+                <label>O que você precisa?</label>
+            </div>
+            <div class="col-6">
+                <div class="form-check">
+                    <input type="radio" asp-for="Objetivo" value="PR" class="form-check-input" id="rd-ponto-retirada" />&nbsp;<label for="rd-ponto-retirada">Ponto de Retirada</label>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-check">
+                    <input type="radio" asp-for="Objetivo" value="PV" class="form-check-input" id="rd-ponto-venda" />&nbsp;<label for="rd-ponto-venda">Ponto de Venda</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col-10">
+                <div class="form-group">
+                    <label asp-for="Nome">Nome</label>
+                    <input type="text" asp-for="Nome" class="form-control" />
+                    <span class="text-danger" asp-validation-for="Nome"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="Email">E-mail</label>
+                    <input type="email" class="form-control" asp-for="Email" />
+                    <span class="text-danger" asp-validation-for="Email"></span>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label asp-for="Telefone">Telefone</label>
+                    <input type="text" class="form-control" asp-for="Telefone" />
+                    <span class="text-danger" asp-validation-for="Telefone"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col-3">
+                <label asp-for="Cnpj">CNPJ</label>
+                <input type="text" class="form-control" asp-for="Cnpj" required />
+                <span class="text-danger" asp-validation-for="Cnpj"></span>
+            </div>
+            <div class="col-7">
+                <div class="form-group">
+                    <label asp-for="NomeEmpresa">Nome da empresa</label>
+                    <input type="text" class="form-control" asp-for="NomeEmpresa" />
+                    <span class="text-danger" asp-validation-for="NomeEmpresa"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col-3">
+                <div class="form-group">
+                    <label asp-for="Cidade">Cidade</label>
+                    <input type="text" class="form-control" asp-for="Cidade" />
+                    <span class="text-muted small">Apenas estado de São Paulo</span>
+                    <span class="text-danger" asp-validation-for="Cidade"></span>
+                </div>
+            </div>
+            <div class="col-7">
+                <div class="form-group">
+                    <label asp-for="Endereco">Endereço</label>
+                    <input type="text" class="form-control" asp-for="Endereco" required />
+                    <span class="text-danger" asp-validation-for="Endereco"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-right p-0">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-link">Voltar</a>&nbsp;
+            <button id="btnSave" class="btn btn-primary" type="submit">Salvar</button>
+            <div id="onerror" class="d-none alert-danger"><p class="text-danger">Algo deu errado. Tente novamente mais tarde.</p></div>
+        </div>
+    </form>
+
+</div>
+<script>
+    function success() { $("form").find("input").val("").attr("checked", false); $('#modalPreRegistro').modal('show'); }
+    function error() { $("#onerror").removeClass("d-none"); }
+</script>
+@section Scripts{
+    <script>
+        $(function () {
+            $('input#Cnpj').mask('00.000.000/0000-00', { reverse: true })
+        });
+    </script>
+}

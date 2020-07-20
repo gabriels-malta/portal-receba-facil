@@ -1,0 +1,146 @@
+.logo-nav {
+    width: 120px;
+    height: 100px;
+}
+
+.nav {
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #57cc99;
+    padding: 10px 20px; 
+}
+
+.nav:hover {
+    text-decoration: none;
+    color: #22577A;
+    
+}
+
+.nav:hover {
+    border-top: 1px solid #38a3a5;
+    width: 100%;
+    text-align: center;
+
+}
+
+.titulo-principal {
+    font-size: 25px;
+    text-align: center;
+    color: #000;
+    font-weight: 500;
+}
+
+.favi {
+    width: 300px;
+}
+
+.receba {
+    color: #22577A;
+    font-weight: bold;
+}
+
+.facil {
+    color: #57cc99;
+    font-weight: bold;
+}
+
+.cart-compras-1 {
+    width: 300px;
+    height: 230px;
+}
+
+.cart-compras-2 {
+    width: 210px;
+    height: 220px;
+}
+
+.link-h3 {
+    color: #80ed99;
+    font-weight: 500;
+}
+
+.link-h3:hover {
+    color: #38a3a5;
+    text-decoration: none;
+}
+
+.cesta {
+    width: 300px;
+    margin: 0 auto;
+}
+
+.text-h1-eco-fisi {
+    color: #80ed99;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.text-h1 {
+    color: #22577A;
+    font-weight: bold;
+}
+
+.span {
+    color: #57cc99;
+    font-weight: bold;
+}
+
+@media (min-width: 601px) and (max-width: 991px) {
+    .display-4 {
+        font-size: 40px;
+    }
+
+    .titulo-principal{
+        font-size: 25px;
+    }
+
+    .menu-nav {
+        text-align: right;
+    }
+}
+  
+
+@media only screen and (max-width: 600px) {
+
+    .display-4 {
+        font-size: 40px !important;
+    }
+
+    .titulo-principal{
+        font-size: 25px;
+    }
+
+    .cesta {
+        width: 250px;
+        height: 250px;
+        
+    }
+
+    .menu-nav {
+        text-align: right;
+    }
+
+}
+
+.js-left-animation {
+    opacity: 0;
+    transition: .5s;
+    transform: translate3d(-100px, 0, 0);
+}
+
+.js-right-animation {
+    opacity: 0;
+    transition: .3s;
+    transform: translate3d(0, 0, -500px);
+}
+
+.js-left-animation.ativo {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
+
+.js-right-animation.ativo {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}

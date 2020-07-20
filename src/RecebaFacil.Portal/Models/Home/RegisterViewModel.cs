@@ -1,9 +1,9 @@
 ﻿using RecebaFacil.Portal.Custom;
 using System.ComponentModel.DataAnnotations;
 
-namespace RecebaFacil.Portal.Models.Auth
+namespace RecebaFacil.Portal.Models.Home
 {
-    public class RegisterViewModel
+    public class CadastrarViewModel
     {
         [Required(ErrorMessage = "Selecione seu objetivo")]
         public string Objetivo { get; set; }

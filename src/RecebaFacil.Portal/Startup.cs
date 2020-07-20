@@ -62,7 +62,7 @@ namespace RecebaFacil.Portal
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action}/{id?}",
-                    defaults: new { controller = "Auth", action = "Index" });
+                    defaults: new { controller = "Home", action = "Index" });
             });
         }
     }

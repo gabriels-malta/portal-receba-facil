@@ -9,6 +9,18 @@
     {
       "library": "jquery-ajax-unobtrusive@3.2.6",
       "destination": "wwwroot/lib/jquery-ajax-unobtrusive/"
+    },
+    {
+      "library": "popper.js@2.4.4",
+      "destination": "wwwroot/lib/popper"
+    },
+    {
+      "library": "inputmask@4.0.9",
+      "destination": "wwwroot/lib/mask"
+    },
+    {
+      "library": "jquery.mask@1.14.16",
+      "destination": "wwwroot/lib/mask/"
     }
   ]
 }
