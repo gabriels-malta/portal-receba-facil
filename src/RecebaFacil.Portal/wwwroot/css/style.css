@@ -1,9 +1,9 @@
-.logo-nav {
+header .logo-nav {
     width: 120px;
     height: 100px;
 }
 
-.nav {
+header .nav {
     text-decoration: none;
     text-transform: uppercase;
     font-weight: bold;
@@ -11,13 +11,13 @@
     padding: 10px 20px; 
 }
 
-.nav:hover {
+header .nav:hover {
     text-decoration: none;
     color: #22577A;
     
 }
 
-.nav:hover {
+header .nav:hover {
     border-top: 1px solid #38a3a5;
     width: 100%;
     text-align: center;
@@ -117,7 +117,7 @@
         
     }
 
-    .menu-nav {
+    header .menu-nav {
         text-align: right;
     }
 

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RecebaFacil.Domain;
-using RecebaFacil.Portal.Models;
 using RecebaFacil.Portal.Services.Interfaces;
 
 namespace RecebaFacil.Portal.Controllers
@@ -20,14 +19,7 @@ namespace RecebaFacil.Portal.Controllers
         public IActionResult Index()
         {
             ViewBag.EncomendasUrl = Url.RouteUrl("Encomenda_PontoRetirada_Inicio");
-
-            InicioViewModel model = new InicioViewModel
-            {
-                NomeEmpresa = _loggedUser.Empresa,
-                NomeUsuario = _loggedUser.Login
-            };
-
-            return View(model);
+            return View();
         }
     }
 }

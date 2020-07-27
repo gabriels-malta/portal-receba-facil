@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using RecebaFacil.Domain;
 using RecebaFacil.Domain.Entities;
+using RecebaFacil.Domain.Enums;
 using RecebaFacil.Domain.Services;
 using RecebaFacil.Portal.Models.Encomenda;
 using RecebaFacil.Portal.Services.Interfaces;
@@ -29,6 +30,7 @@ namespace RecebaFacil.Portal.Controllers
             _empresaService = empresaService;
         }
 
+        #region ::: PONTO DE VENDA :::
         [Authorize(Roles = Roles.PONTO_VENDA)]
         [Route("ponto-venda/ver-encomendas", Name = "Encomenda_PontoVenda_Index")]
         public async Task<IActionResult> PontoVendaIndex()
@@ -99,7 +101,9 @@ namespace RecebaFacil.Portal.Controllers
                 return PartialView("_CadastroEncomenda", model);
             }
         }
+        #endregion
 
+        #region ::: PONTO DE RETIRADA :::
         [Authorize(Roles = Roles.PONTO_RETIRADA)]
         [Route("ponto-retirada/minhas-encomendas", Name = "Encomenda_PontoRetirada_Inicio")]
         public async Task<IActionResult> MinhaEncomendas()
@@ -120,12 +124,64 @@ namespace RecebaFacil.Portal.Controllers
                     TipoMovimento = item.Historia.Max(x => x.TipoMovimento).GetDescription(),
                     PontoVendaNome = nomePontoVenda,
                     PontoVendaId = item.PontoVendaId,
-
+                    UrlEncomendaDetalhe = Url.RouteUrl("Encomenda_PontoRetirada_Detalhe", new
+                    {
+                        encomendaId = item.Id
+                    })
                 });
             }
 
             return PartialView("PontoRetiradaIndex", model);
         }
 
+        [Authorize(Roles = Roles.PONTO_RETIRADA)]
+        [Route("ponto-retirada/minhas-encomendas/{encomendaId}/detalhe", Name = "Encomenda_PontoRetirada_Detalhe")]
+        public async Task<IActionResult> MinhaEncomendasDetalhe(Guid encomendaId)
+        {
+            var encomenda = await _encomendaService.ObterPorId(encomendaId);
+            string nomePontoVenda = await _empresaService.ObterNomeEmpresa(encomenda.PontoVendaId);
+
+            var model = new EncomendaDetalheViewModel
+            {
+                Id = encomenda.Id,
+                DataPedido = encomenda.DataPedido,
+                NotaFiscal = encomenda.NotaFiscal,
+                NumeroPedido = encomenda.NumeroPedido,
+                PontoVendaNome = nomePontoVenda,
+                PontoVendaId = encomenda.PontoVendaId,
+                PermiteMovimentar = encomenda.PodeMovimentar(),
+                Movimentacao = encomenda.Historia?
+                                        .OrderByDescending(d => d.DataCadastro)
+                                        .Select(x => new EncomendaHistoriaViewModel
+                                        {
+                                            EncomendaId = x.EncomendaId,
+                                            Nome = x.TipoMovimento.GetDescription(),
+                                            DataMovimento = x.DataCadastro
+                                        }),
+                MovimentosPermitidos = encomenda
+                                        .ObterMovimentosPermitidos(TipoEmpresa.PontoRetirada)
+                                        .Select(x => new SelectListItem(text: x.GetDescription(), value: x.ToString()))
+            };
+
+            return View("PontoRetiradaDetalhe", model);
+        }
+
+
+        [Authorize(Roles = Roles.PONTO_RETIRADA)]
+        [Route("ponto-retirada/minhas-encomendas/{encomendaId}/movimentar")]
+        [HttpPost]
+        public async Task<IActionResult> MovimentarEncomenda([FromRoute] Guid encomendaId,  string movimento)
+        {
+            try
+            {
+                await _encomendaService.AdicionarMovimento(encomendaId, _loggedUser.EmpresaId, Enum.Parse<TipoMovimento>(movimento));
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        #endregion
     }
 }

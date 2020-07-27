@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using RecebaFacil.Domain.Services;
 using RecebaFacil.Portal.Models.Auth;
 using RecebaFacil.Portal.Services.Interfaces;
@@ -23,12 +25,16 @@ namespace RecebaFacil.Portal.Controllers
         public IActionResult Index()
         {
             return View();
+
         }
 
         [HttpPost("autenticar", Name = "Auth_Autenticar")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(LogonViewModel model)
         {
+#if DEBUG
+            model = new LogonViewModel() { LoginName = "josefaemarina", Senha = "123qwe" };
+#endif
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -54,7 +60,7 @@ namespace RecebaFacil.Portal.Controllers
         {
             _httpContextService.SignOut();
 
-            return RedirectToRoute("Auth_Entrar");
+            return RedirectToAction(actionName: "Index", controllerName: "Home");
         }
     }
 }

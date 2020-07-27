@@ -1,9 +1,7 @@
 ﻿@{
-    string tipoEmpresa = string.Empty;
-    if (TempData.ContainsKey("TipoEmpresa"))
-    {
-        tipoEmpresa = " - " + TempData["TipoEmpresa"];
-    }
+    string nomeEmpresa = TempData["NomeEmpresa"].ToString(),
+        usuarioLogin = TempData["UsuarioLogin"].ToString(),
+        hoje = DateTime.Now.ToShortDateString();
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -13,37 +11,69 @@
     <title>Portal Receba Fácil</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link href="~/fontawesome/css/all.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link href="~/css/style.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Portal Receba Fácil@(tipoEmpresa)</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+<body class="bg-light" style="position: relative; margin: auto;">
+    <div class="container mt-md-5 mb-md-5">
+        <header class="position-relative bg-white">
+            <nav class="navbar navbar-expand-md navbar-light">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Hub">
+                    <img src="~/image/receba-facil-simbolo.png" alt="Logo da empresa" style="width: 10% !important" class="img-fluid float-left" />
+                    <h1 class="d-inline-block float-left ml-md-3 verde-escudo">
+                        &nbsp;Receba Fácil
+                    </h1>
+                </a>
+                <button class="navbar-toggler menu-nav" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse"></div>
-                <form method="post" asp-route="Auth_Sair" asp-antiforgery="true">
-                    <button type="submit" class="btn btn-link text-muted">Sair&nbsp;<i class="fas fa-sign-out-alt"></i></button>
-                </form>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item active">
+                            <a asp-controller="Home" asp-action="Hub" class="nav">Início</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav" asp-route="MeuPerfil">Perfil</a>
+                        </li>
+                        <li class="nav-item">
+                            <form method="post" asp-route="Auth_Sair" asp-antiforgery="true" style="width: 5em;">
+                                <button type="submit" class="btn btn-link text-muted">Sair&nbsp;<i class="fas fa-sign-out-alt"></i></button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+
+        <div class="d-flex">
+            <main role="main" class="p-3 flex-grow-1 bg-white overflow-auto" style="min-height:600px;">
+                <div class="row mb-2">
+                    <div class="col-12 small">
+                        <p class="d-inline-block float-md-right">
+                            <span class="text-muted">usuário:</span> @usuarioLogin&nbsp;<span class="text-muted">acesso:</span> @hoje
+                        </p>
+                    </div>
+                </div>
+                @RenderBody()
+            </main>
+        </div>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container text-center">
-            &copy; 2020 - Portal Receba Fácil - <a class="text-capitalize" asp-route="Home_Suporte">Suporte</a>
+    <footer class="container-fluid text-muted">
+        <div class="text-center pb-3 pt-3">
+            Portal Receba Fácil &copy; 2020
+            <br /><a class="text-capitalize" asp-route="Home_Suporte">Suporte</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/popper/umd/popper.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/lib/mask/jquery.mask.min.js"></script>
+    <script src="~/lib/select2/js/select2.min.js"></script>
     <script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/fontawesome/js/all.min.js"></script>
     <script src="~/js/site.js"></script>

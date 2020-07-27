@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Portal Receba Fácil</title>
     <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/lib/select2/css/select2.css" rel="stylesheet" />
     <link href="~/css/style.css" rel="stylesheet" />
 </head>
-<body>
-    <header class="container-fluid">
+<body style="max-width: 1366px !important; position: relative; margin: auto;">
+    <header class="container">
         <nav class="navbar navbar-expand-md navbar-light">
             <a class="navbar-brand" asp-controller="Home" asp-action="Index">
                 <img src="~/image/receba-facil.png" alt="Logo da empresa" class="logo-nav">
@@ -33,6 +34,9 @@
                     <li class="nav-item">
                         <a class="nav" href="#">contato</a>
                     </li>
+                    <li class="nav-item">
+                        <a asp-route="Auth_Entrar" class="nav">Entrar</a>
+                    </li>
                 </ul>
             </div>
         </nav>
@@ -42,15 +46,15 @@
         @RenderBody()
     </main>
 
-    <footer class="border-top footer text-muted pt-5 pb-5">
+    <footer class="border-top footer text-muted pt-5">
         <div class="container text-center">&copy; 2020 - Portal Receba Fácil</div>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/popper/umd/popper.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/lib/mask/jquery.mask.min.js"></script>
+    <script src="~/lib/select2/js/select2.min.js"></script>
 
     <script>
         $(function () {

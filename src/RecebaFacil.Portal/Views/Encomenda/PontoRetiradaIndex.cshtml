@@ -1,8 +1,6 @@
 ﻿@model IEnumerable<RecebaFacil.Portal.Models.Encomenda.MinhasEncomendasViewModel>
 
 <div id="container-pv-encomendas">
-
-
     <div class="row">
         <div class="col">
             <h4>Minhas encomendas</h4>
@@ -14,18 +12,20 @@
                             <th>Número Pedido</th>
                             <th>Nota Fiscal</th>
                             <th>Situação</th>
-                            <th>Ponto de Venda</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in Model)
                         {
                             <tr>
-                                <td>@item.DataPedido</td>
+                                <td>@item.DataPedido.ToShortDateString()</td>
                                 <td>@item.NumeroPedido</td>
                                 <td>@item.NotaFiscal</td>
                                 <td>@item.TipoMovimento</td>
-                                <td>@item.PontoVendaNome</td>
+                                <td>
+                                    <a href="@item.UrlEncomendaDetalhe">detalhes</a>
+                                </td>
                             </tr>
                         }
                     </tbody>

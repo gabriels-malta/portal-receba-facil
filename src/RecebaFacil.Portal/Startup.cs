@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using RecebaFacil.Portal.Extensions;
 using RecebaFacil.Portal.Services;
 using RecebaFacil.Portal.Services.Interfaces;
+using System;
 using System.Globalization;
 
 namespace RecebaFacil.Portal
@@ -21,6 +22,8 @@ namespace RecebaFacil.Portal
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMemoryCache(setup => setup.ExpirationScanFrequency = TimeSpan.FromDays(364));
+
             services.AddScoped<IHttpContextService, HttpContextService>();
             services.AddScoped<ICacheService, CacheService>();
 

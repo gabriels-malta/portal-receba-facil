@@ -1,10 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
+using RecebaFacil.Domain;
 using RecebaFacil.Domain.Entities;
 using RecebaFacil.Domain.Services;
 using RecebaFacil.Portal.Models;
 using RecebaFacil.Portal.Models.Home;
 using RecebaFacil.Portal.Services.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace RecebaFacil.Portal.Controllers
@@ -12,11 +18,14 @@ namespace RecebaFacil.Portal.Controllers
     public class HomeController : BaseController
     {
         private readonly IPreRegistroService _PreRegistroService;
+        private readonly IMemoryCache _cache;
         public HomeController(IHttpContextService httpContextService,
-                              IPreRegistroService preRegistroService)
+                              IPreRegistroService preRegistroService,
+                              IMemoryCache cache)
             : base(httpContextService)
         {
             _PreRegistroService = preRegistroService;
+            _cache = cache;
         }
 
         [HttpGet("")]
@@ -26,9 +35,21 @@ namespace RecebaFacil.Portal.Controllers
         }
 
         [HttpGet("cadastrar")]
-        public IActionResult Cadastrar()
+        public async Task<IActionResult> Cadastrar()
         {
-            return View();
+            CadastrarViewModel model = new CadastrarViewModel();
+
+            if (!_cache.TryGetValue(CacheKeys.Microrregioes, out IEnumerable<IBGEMicrorregioes> microrregioes))
+            {
+                using HttpClient httpClient = new HttpClient();
+                var response = await httpClient.GetAsync("https://servicodados.ibge.gov.br/api/v1/localidades/estados/sp/municipios");
+                microrregioes = JsonConvert.DeserializeObject<IEnumerable<IBGEMicrorregioes>>(await response.Content.ReadAsStringAsync());
+                _ = _cache.Set(CacheKeys.Microrregioes, microrregioes, TimeSpan.FromDays(90));
+            }
+
+            model.MontarListaDeMunicipios(microrregioes);
+
+            return View(model);
         }
 
         [HttpPost("cadastrar")]
@@ -38,9 +59,12 @@ namespace RecebaFacil.Portal.Controllers
             try
             {
                 if (!ModelState.IsValid)
-                    return PartialView("Cadastrar",model);
+                {
+                    model.MontarListaDeMunicipios(_cache.Get<IEnumerable<IBGEMicrorregioes>>(CacheKeys.Microrregioes));
+                    return View(model);
+                }
 
-               await _PreRegistroService.Salvar(new PreRegistro
+                await _PreRegistroService.Salvar(new PreRegistro
                 {
                     Nome = model.Nome,
                     Email = model.Email,
@@ -52,11 +76,15 @@ namespace RecebaFacil.Portal.Controllers
                     Objetivo = model.Objetivo
                 });
 
-                return PartialView("_ModalCadastro");
+                TempData.Add("success", true);
+
+                return View(new CadastrarViewModel());
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                ModelState.AddModelError("", ex.Message);
+                model.MontarListaDeMunicipios(_cache.Get<IEnumerable<IBGEMicrorregioes>>(CacheKeys.Microrregioes));
+                return View(model);
             }
 
         }
@@ -72,14 +100,16 @@ namespace RecebaFacil.Portal.Controllers
         {
             return View(new ErrorViewModel { RequestId = HttpContext.TraceIdentifier });
         }
-        [Authorize]
-        public IActionResult Hub() => RedirectToRoute(_httpContextService.ObterRotaInicial());
+
         [Authorize]
         [HttpGet("receba-facil/suporte", Name = "Home_Suporte")]
         public IActionResult Suporte()
         {
             return View();
         }
+
+        [Authorize]
+        public IActionResult Hub() => RedirectToRoute(_httpContextService.ObterRotaInicial());
         #endregion
     }
 }
