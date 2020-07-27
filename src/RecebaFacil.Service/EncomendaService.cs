@@ -120,7 +120,7 @@ namespace RecebaFacil.Service
                 TipoMovimento = movimento
             });
         }
-
+        
         public async Task<Encomenda> ObterPorId(Guid id)
         {
             return await _repositoryEncomenda.ObterPorId(id);
