@@ -1,0 +1,127 @@
+﻿@model RecebaFacil.Portal.Models.Home.CadastrarViewModel
+@{
+    Layout = "_LayoutInstitucional";
+}
+
+<div id="container-cadastrar" class="position-relative m-auto p-5">
+
+
+    <h2 class="mb-md-4">Faça seu pré-cadastro e entraremos em contato</h2>
+    <form method="post" asp-controller="Home" asp-action="Cadastrar" asp-antiforgery="true">
+        <div asp-validation-summary="ModelOnly"></div>
+
+        @{
+            if (TempData.TryGetValue("success", out object ok))
+            {
+                <div class="text-center alert-success p-3">
+                    <p>
+                        Seu cadastro foi  realizado com sucesso!
+                    </p>
+                    <p>
+                        Em breve entraremos em contato. :)
+                    </p>
+                </div>
+            }
+        }
+
+        <div class="form-row">
+            <div class="col-12 mt-2 mb-2">
+                <label>
+                    <strong>O que você precisa?</strong>
+                </label>
+                <div class="d-sm-block d-md-inline-block ml-md-3 mr-md-3">
+                    <div class="form-check">
+                        <input type="radio" asp-for="Objetivo" value="PR" class="form-check-input" id="rd-ponto-retirada" />&nbsp;<label for="rd-ponto-retirada">Ponto de Retirada</label>
+                    </div>
+                </div>
+                <div class="d-sm-block d-md-inline-block">
+                    <div class="form-check">
+                        <input type="radio" asp-for="Objetivo" value="PV" class="form-check-input" id="rd-ponto-venda" />&nbsp;<label for="rd-ponto-venda">Ponto de Venda</label>
+                    </div>
+                </div>
+                <span class="text-danger small ml-2" asp-validation-for="Objetivo"></span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col">
+                <div class="form-group">
+                    <label asp-for="Nome">Nome</label><span class="text-danger small ml-2" asp-validation-for="Nome"></span>
+                    <input type="text" asp-for="Nome" class="form-control" required />
+
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col-sm-12 col-md-8">
+                <div class="form-group">
+                    <label asp-for="Email">E-mail</label><span class="text-danger small ml-2" asp-validation-for="Email"></span>
+                    <input type="email" class="form-control" asp-for="Email" required />
+
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-4">
+                <div class="form-group">
+                    <label asp-for="Telefone">Telefone</label><span class="text-danger small ml-2" asp-validation-for="Telefone"></span>
+                    <input type="tel" class="form-control" asp-for="Telefone" required />
+
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col-sm-12 col-md-3">
+                <label asp-for="Cnpj">CNPJ</label><span class="text-danger small ml-2 small ml-2" asp-validation-for="Cnpj"></span>
+                <input type="text" class="form-control" asp-for="Cnpj" required />
+
+            </div>
+            <div class="col-sm-12 col-md-9">
+                <div class="form-group">
+                    <label asp-for="NomeEmpresa">Nome da empresa</label><span class="text-danger small ml-2" asp-validation-for="NomeEmpresa"></span>
+                    <input type="text" class="form-control" asp-for="NomeEmpresa" required />
+
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col-sm-12 col-md-3">
+                <div class="form-group">
+                    <label asp-for="Cidade">Cidade</label><span class="text-danger small ml-2" asp-validation-for="Cidade"></span>
+                    <select class="form-control" asp-for="Cidade" asp-items="Model.Municipios" required></select>
+                    <span class="text-muted small">Apenas estado de São Paulo</span>
+
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-9">
+                <div class="form-group">
+                    <label asp-for="Endereco">Endereço</label><span class="text-danger small ml-2" asp-validation-for="Endereco"></span>
+                    <input type="text" class="form-control" asp-for="Endereco" required />
+
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col text-right">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-link">Voltar</a>&nbsp;
+                <button id="btnSave" class="btn btn-primary" type="submit">Salvar</button>
+            </div>
+        </div>
+    </form>
+
+</div>
+@section Scripts{
+    <script>
+        $(function () {
+            $('#container-cadastrar input#Cnpj').mask('00.000.000/0000-00');
+            $('#container-cadastrar input#Telefone').mask('(99)09999-9999');
+            $('#container-cadastrar select#Cidade').select2();
+            document.querySelector('#container-cadastrar form').addEventListener('submit', function (e) {
+                $('#container-cadastrar input#Cnpj').unmask();
+                $('#container-cadastrar input#Telefone').unmask();
+            }, false);
+        });
+    </script>
+}

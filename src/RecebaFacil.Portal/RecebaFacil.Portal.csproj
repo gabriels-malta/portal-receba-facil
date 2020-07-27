@@ -10,7 +10,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="Views\Home\Index.cshtml" />
+    <Content Remove="Views\Auth\Register.cshtml" />
+    <Content Remove="Views\Auth\_PreRegisterModal.cshtml" />
+    <Content Remove="Views\Home\base.cshtml" />
     <Content Remove="Views\Shared\_Header.cshtml" />
   </ItemGroup>
 
@@ -21,12 +23,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\RecebaFacil.CrossCutting\RecebaFacil.CrossCutting.csproj" />
   </ItemGroup>
-
-
-
 </Project>

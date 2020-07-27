@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace RecebaFacil.Domain.Entities
+namespace RecebaFacil.Domain.Enums
 {
     public enum TipoMovimento
     {

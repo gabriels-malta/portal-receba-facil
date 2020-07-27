@@ -94,3 +94,7 @@ a:hover {
 .required {
     border: 1px solid red;
 }
+
+.verde-escudo {
+    color: #00567c;
+}

@@ -20,8 +20,9 @@ namespace RecebaFacil.Portal.Controllers
 
         public override void OnActionExecuted(ActionExecutedContext context)
         {
-            string tipoEmpresa = _loggedUser.Role == Roles.PONTO_RETIRADA ? "Ponto de Retirada" : "Ponto de Venda";
-            TempData["TipoEmpresa"] = tipoEmpresa;
+            TempData["UsuarioLogin"] = _loggedUser.Login;
+            TempData["NomeEmpresa"] = _loggedUser.Empresa;
+
             base.OnActionExecuted(context);
         }
     }

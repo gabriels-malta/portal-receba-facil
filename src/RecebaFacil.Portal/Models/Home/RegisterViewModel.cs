@@ -1,10 +1,19 @@
-﻿using RecebaFacil.Portal.Custom;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using RecebaFacil.Portal.Custom;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text.Json.Serialization;
 
-namespace RecebaFacil.Portal.Models.Auth
+namespace RecebaFacil.Portal.Models.Home
 {
-    public class RegisterViewModel
+    public class CadastrarViewModel
     {
+        public CadastrarViewModel()
+        {
+            Municipios = Enumerable.Empty<SelectListItem>();
+        }
+
         [Required(ErrorMessage = "Selecione seu objetivo")]
         public string Objetivo { get; set; }
 
@@ -41,5 +50,24 @@ namespace RecebaFacil.Portal.Models.Auth
         [Required(AllowEmptyStrings = false, ErrorMessage = "Campo Obrigatorio")]
         [Cnpj(ErrorMessage = "CNPJ inválido")]
         public string Cnpj { get; set; }
+
+        public IEnumerable<SelectListItem> Municipios { get; internal set; }
+
+        internal void MontarListaDeMunicipios(IEnumerable<IBGEMicrorregioes> microrregioes)
+            => Municipios = new SelectListItem[] { new SelectListItem(text: "", value: "", true) }.Concat(microrregioes.Select(x => new SelectListItem(x.Nome, x.Nome)));
+    }
+
+    public struct IBGEMicrorregioes
+    {
+        public IBGEMicrorregioes(string id, string nome)
+        {
+            Id = id;
+            Nome = nome;
+        }
+
+        [JsonPropertyName("id")]
+        public string Id { get; private set; }
+        [JsonPropertyName("nome")]
+        public string Nome { get; private set; }
     }
 }

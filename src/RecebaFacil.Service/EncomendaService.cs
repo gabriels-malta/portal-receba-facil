@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
 using RecebaFacil.Domain.Entities;
+using RecebaFacil.Domain.Enums;
 using RecebaFacil.Domain.Exception;
 using RecebaFacil.Domain.Services;
 using RecebaFacil.Repository.Interfaces;
@@ -16,8 +17,8 @@ namespace RecebaFacil.Service
         private readonly ILogger<IEncomendaService> _logger;
         private readonly IRepositoryEncomenda _repositoryEncomenda;
         private readonly IRepositoryEncomendaHistoria _repositoryHistoria;
-
         private readonly IEmpresaService _empresaService;
+
         public EncomendaService(IRepositoryEncomenda repositoryEncomenda,
                                 IEmpresaService empresaService,
                                 ILogger<IEncomendaService> logger,
@@ -70,7 +71,8 @@ namespace RecebaFacil.Service
 
         public async Task MovimentarPorPontoVenda(Guid encomendaId, Guid pontoVendaId)
         {
-            if (!await _repositoryEncomenda.Existe(x => x.PontoVendaId == pontoVendaId)) throw new RecebaFacilException("Operação inválida para este ponto de venda");
+            if (!await _repositoryEncomenda.Existe(x => x.PontoVendaId == pontoVendaId))
+                throw new RecebaFacilException("Operação inválida para este ponto de venda");
 
             IList<EncomendaHistoria> movimentos = await _repositoryHistoria.ObterListaPor(x => x.EncomendaId == encomendaId);
 
@@ -88,6 +90,37 @@ namespace RecebaFacil.Service
             await _repositoryHistoria.Salvar(historia);
         }
 
+        public async Task AdicionarMovimento(Guid encomendaId, Guid empresaId, TipoMovimento movimento)
+        {
+            var encomenda = await _repositoryEncomenda.ObterPorId(encomendaId);
+            if (encomenda == null)
+            {
+                _logger.LogWarning($"Data: ${DateTime.Now} | EncomendaId: ${encomendaId} | EmpresaId: ${empresaId}");
+                throw new RecebaFacilException("Encomenda não encontrada");
+            }
+
+            if (!encomenda.PodeMovimentar())
+            {
+                _logger.LogWarning($"Data: ${DateTime.Now} | EncomendaId: ${encomendaId} | EmpresaId: ${empresaId} | Movimento pretendido: ${movimento}");
+                throw new RecebaFacilException("Situação atual não permite movimentação");
+            }
+
+            var empresa = await _empresaService.ObterPorId(empresaId);
+            if (!encomenda.ObterMovimentosPermitidos(empresa.TipoEmpresa).Contains(movimento))
+            {
+                _logger.LogWarning($"Data: ${DateTime.Now} | EncomendaId: ${encomendaId} | EmpresaId: ${empresaId} | Movimento pretendido: ${movimento}");
+                throw new RecebaFacilException("Movimentação inválida");
+            }
+
+            _ = await _repositoryHistoria.Salvar(new EncomendaHistoria
+            {
+                Id = Guid.NewGuid(),
+                DataCadastro = DateTime.Now,
+                EncomendaId = encomendaId,
+                TipoMovimento = movimento
+            });
+        }
+        
         public async Task<Encomenda> ObterPorId(Guid id)
         {
             return await _repositoryEncomenda.ObterPorId(id);

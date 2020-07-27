@@ -44,11 +44,6 @@
         }
     }
 
-    function asyncAddAntiForgeryToken(xhr) {
-        if (antiforgery == "true")
-            xhr.setRequestHeader("RequestVerificationToken", document.querySelector("input[name='_rf_afk']").value);
-    }
-
     function asyncOnSuccess(element, data, contentType) {
         var mode;
 
@@ -87,7 +82,6 @@
 
         loading = $(element.getAttribute("data-ajax-loading"));
         duration = parseInt(element.getAttribute("data-ajax-loading-duration"), 10) || 0;
-        antiforgery = element.getAttribute("data-ajax-antiforgery");
 
         $.extend(options, {
             type: element.getAttribute("data-ajax-method") || undefined,
@@ -95,7 +89,6 @@
             cache: (element.getAttribute("data-ajax-cache") || "").toLowerCase() === "true",
             beforeSend: function (xhr) {
                 var result;
-                asyncAddAntiForgeryToken(xhr);
                 asyncOnBeforeSend(xhr, method);
                 result = getFunction(element.getAttribute("data-ajax-begin"), ["xhr"]).apply(element, arguments);
                 if (result !== false) {
