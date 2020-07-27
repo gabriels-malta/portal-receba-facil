@@ -1,4 +1,5 @@
 ﻿using RecebaFacil.Domain.Entities;
+using RecebaFacil.Domain.Enums;
 using RecebaFacil.Domain.Exception;
 using System;
 using System.Linq;

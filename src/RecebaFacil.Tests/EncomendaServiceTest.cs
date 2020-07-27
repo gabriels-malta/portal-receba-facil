@@ -1,12 +1,11 @@
 ﻿using Moq;
 using RecebaFacil.Domain.Entities;
+using RecebaFacil.Domain.Enums;
 using RecebaFacil.Domain.Services;
 using RecebaFacil.Repository.Interfaces;
 using RecebaFacil.Service;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
