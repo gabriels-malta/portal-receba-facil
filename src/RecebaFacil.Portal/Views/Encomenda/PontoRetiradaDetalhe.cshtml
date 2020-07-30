@@ -38,25 +38,30 @@
                     @if (Model.PermiteMovimentar)
                     {
                         <li id="novoMovimento" class="list-group-item d-none">
-                            <input type="hidden" value="@Model.Id" id="encomendaId" />
-                            <div class="row">
-                                <div class="form-group col-md-4">
-                                    <input type="text" value="@(DateTime.Now)" class="form-control" readonly />
+                            <form asp-antiforgery="true"
+                                  data-ajax="true"
+                                  data-ajax-method="post"
+                                  data-ajax-url="movimentar"
+                                  data-ajax-success="prsuccessmovimentar">
+                                <div class="row">
+                                    <div class="form-group col-md-5">
+                                        <input type="text" value="@(DateTime.Now)" class="form-control" readonly />
+                                    </div>
+                                    <div class="form-group col-md-5">
+                                        <select class="form-control" name="movimento" asp-items="Model.MovimentosPermitidos" required>
+                                            <option value="">Selecione...</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md text-right">
+                                        <button id="btnCancelarMovimento" class="btn btn-link btn-sm">
+                                            <i class="fa fa-ban" title="cancelar"></i>
+                                        </button>
+                                        <button id="btnSalvarMovimento" class="btn btn-link btn-sm">
+                                            <i class="fa fa-check" title="salvar"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="form-group col-md-6">
-                                    <select class="form-control" asp-items="Model.MovimentosPermitidos" required>
-                                        <option value="">Selecione...</option>
-                                    </select>
-                                </div>
-                                <div class="col-md text-right">
-                                    <button id="btnCancelarMovimento" class="btn btn-link btn-sm">
-                                        <i class="fa fa-ban" title="cancelar"></i>
-                                    </button>
-                                    <button id="btnSalvarMovimento" class="btn btn-link btn-sm">
-                                        <i class="fa fa-check" title="salvar"></i>
-                                    </button>
-                                </div>
-                            </div>
+                            </form>
                         </li>
                     }
                     @foreach (var item in Model.Movimentacao)
@@ -73,27 +78,10 @@
 @section Scripts{
     <script>
         $(function () {
-            const $formulario = $('#novoMovimento'),
-                $hdnEncomendaId = $formulario.find('#encomendaId'),
-                $ddlMovimentos = $formulario.find('select');
-
+            const $formulario = $('#novoMovimento'), $ddlMovimentos = $formulario.find('select');
             $('#btnNovoMovimento').on('click', function () { $formulario.removeClass('d-none'); });
             $('#btnCancelarMovimento').on('click', function () { $formulario.addClass('d-none'); $ddlMovimentos.val(''); });
-            $('#btnSalvarMovimento').on('click', function () {
-                if ($ddlMovimentos.val() == '') {
-                    alert('Selecione a movimentação');
-                    return;
-                }
-
-                $.ajax({
-                    type: 'POST',
-                    url: 'movimentar',
-                    contentType: 'application/json',
-                    data: JSON.stringify({ movimento: $ddlMovimentos.val() }),
-                    success: function () { window.location.href = 'detalhe'; },
-                    error: function (err, status, message) { alert(status); }
-                });
-            });
+            window.prsuccessmovimentar = function () { window.location.reload(); }
         });
     </script>
 }

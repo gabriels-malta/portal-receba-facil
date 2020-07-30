@@ -136,7 +136,7 @@ namespace RecebaFacil.Portal.Controllers
 
         [Authorize(Roles = Roles.PONTO_RETIRADA)]
         [Route("ponto-retirada/minhas-encomendas/{encomendaId}/detalhe", Name = "Encomenda_PontoRetirada_Detalhe")]
-        public async Task<IActionResult> MinhaEncomendasDetalhe(Guid encomendaId)
+        public async Task<IActionResult> MinhasEncomendasDetalhe(Guid encomendaId)
         {
             var encomenda = await _encomendaService.ObterPorId(encomendaId);
             string nomePontoVenda = await _empresaService.ObterNomeEmpresa(encomenda.PontoVendaId);
@@ -166,15 +166,18 @@ namespace RecebaFacil.Portal.Controllers
             return View("PontoRetiradaDetalhe", model);
         }
 
-
-        [Authorize(Roles = Roles.PONTO_RETIRADA)]
-        [Route("ponto-retirada/minhas-encomendas/{encomendaId}/movimentar")]
         [HttpPost]
-        public async Task<IActionResult> MovimentarEncomenda([FromRoute] Guid encomendaId,  string movimento)
+        [Authorize(Roles = Roles.PONTO_RETIRADA)]
+        [ValidateAntiForgeryToken]
+        [Route("ponto-retirada/minhas-encomendas/{encomendaId}/movimentar")]
+        public async Task<IActionResult> MovimentarEncomenda([FromRoute] Guid encomendaId, string movimento)
         {
             try
             {
-                await _encomendaService.AdicionarMovimento(encomendaId, _loggedUser.EmpresaId, Enum.Parse<TipoMovimento>(movimento));
+                if (!Enum.TryParse(movimento, out TipoMovimento tipoMovimento))
+                    return BadRequest("Invalid request");
+
+                await _encomendaService.AdicionarMovimento(encomendaId, _loggedUser.EmpresaId, tipoMovimento);
                 return Ok();
             }
             catch (Exception ex)
