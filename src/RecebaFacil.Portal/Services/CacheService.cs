@@ -13,17 +13,33 @@ namespace RecebaFacil.Portal.Services
             _cache = cache;
         }
 
-        public T CriarOuObter<T>(string chave, T valor)
-        {
-            return _cache.GetOrCreate(chave, entry =>
-            {
-                entry.SlidingExpiration = TimeSpan.FromMinutes(16);
-                return valor;
-            });
-        }
 
         public T Obter<T>(string chave) => _cache.Get<T>(chave);
 
         public void Limpar(string chave) => _cache.Remove(chave);
+
+        public bool TentarObter<T>(string chave, out T valor)
+        {
+            valor = default;
+            var entry = _cache.Get(chave);
+
+            if (entry != null)
+            {
+                valor = (T)entry;
+                return true;
+            }
+            return false;
+
+        }
+
+        public T CriarOuObter<T>(string chave, T valor, TimeSpan expiraEm)
+        {
+            return _cache.GetOrCreate(chave, entry =>
+            {
+                entry.SlidingExpiration = expiraEm;
+                return valor;
+            });
+        }
+        public T CriarOuObter<T>(string chave, T valor) => CriarOuObter(chave, valor, TimeSpan.FromMinutes(16));
     }
 }

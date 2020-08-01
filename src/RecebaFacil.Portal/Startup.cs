@@ -24,14 +24,16 @@ namespace RecebaFacil.Portal
         {
             services.AddMemoryCache(setup => setup.ExpirationScanFrequency = TimeSpan.FromDays(364));
 
+            services.AddSingleton(new Helpers.SelectListItemHelper());
+
             services.AddScoped<IHttpContextService, HttpContextService>();
             services.AddScoped<ICacheService, CacheService>();
+            services.AddScoped<IIBGEMicrorregioesService, IBGEMicrorregioesService>();
 
             services.AddDependencies(Configuration);
             services.AddCookies();
 
             services.AddHttpContextAccessor();
-            services.AddMemoryCache();
 
             services.AddControllersWithViews(o => o.EnableEndpointRouting = false);
 

@@ -81,7 +81,12 @@
             const $formulario = $('#novoMovimento'), $ddlMovimentos = $formulario.find('select');
             $('#btnNovoMovimento').on('click', function () { $formulario.removeClass('d-none'); });
             $('#btnCancelarMovimento').on('click', function () { $formulario.addClass('d-none'); $ddlMovimentos.val(''); });
-            window.prsuccessmovimentar = function () { window.location.reload(); }
+            window.prsuccessmovimentar = function () {
+                $formulario.prepend(`<div class="alert-success">Movimentação realizada com sucesso</div>`);
+                this.setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            }
         });
     </script>
 }

@@ -49,12 +49,12 @@ namespace RecebaFacil.Portal.Services
 
             CriarCacheUsuario(usuario);
 
-            await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal).ConfigureAwait(false);
+            await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
         }
 
         public async Task SignOut()
         {
-            await _httpContextAccessor.HttpContext.SignOutAsync().ConfigureAwait(false);
+            await _httpContextAccessor.HttpContext.SignOutAsync();
         }
 
         public string ObterRole => GetRoleValue(ClaimTypes.Role);

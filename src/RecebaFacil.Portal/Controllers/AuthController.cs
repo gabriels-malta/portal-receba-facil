@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using RecebaFacil.Domain;
 using RecebaFacil.Domain.Services;
 using RecebaFacil.Portal.Models.Auth;
 using RecebaFacil.Portal.Services.Interfaces;
@@ -13,12 +14,15 @@ namespace RecebaFacil.Portal.Controllers
     public class AuthController : BaseController
     {
         private readonly IAuthService _AuthService;
+        private readonly ICacheService _cacheService;
 
         public AuthController(IAuthService authService,
-                              IHttpContextService httpContextService)
+                              IHttpContextService httpContextService,
+                              ICacheService cacheService)
             : base(httpContextService)
         {
             _AuthService = authService;
+            _cacheService = cacheService;
         }
 
         [HttpGet("entrar", Name = "Auth_Entrar")]
@@ -32,9 +36,6 @@ namespace RecebaFacil.Portal.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(LogonViewModel model)
         {
-#if DEBUG
-            model = new LogonViewModel() { LoginName = "josefaemarina", Senha = "123qwe" };
-#endif
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -56,9 +57,11 @@ namespace RecebaFacil.Portal.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
         [HttpPost("sair", Name = "Auth_Sair")]
-        public IActionResult Sair()
+        public async Task<IActionResult> Sair()
         {
-            _httpContextService.SignOut();
+            _cacheService.Limpar(CacheKeys.UsuarioLogado);
+
+            await _httpContextService.SignOut();
 
             return RedirectToAction(actionName: "Index", controllerName: "Home");
         }
