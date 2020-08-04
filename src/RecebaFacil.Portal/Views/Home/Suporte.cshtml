@@ -1,3 +1,52 @@
-﻿<h1>Fale conosco</h1>
+﻿@model RecebaFacil.Portal.Models.Home.SuporteViewModel
 
-<a class="btn btn-link" asp-controller="Home" asp-action="Index">Voltar</a>
+@if (Model.PartialViewName == null)
+{
+    <div class="d-flex mx-auto">
+        <p class="text-danger">
+            Algo deu errado. Tente novamente mais tarde
+        </p>
+    </div>
+}
+else
+{
+
+
+    @if ("_SuporteNovoEndereco" == Model.PartialViewName)
+    {
+        <partial name="@Model.PartialViewName" model="Model.NovoEnderecoViewModel" />
+
+        @section Scripts{
+            <script>
+                $(function () {
+                    $('#formNovoEndereco input#Cep').mask('00000-000');
+                    $('#formNovoEndereco select#Cidade').select2();
+                    $('#formNovoEndereco #pesquisarCep').on('click', function (e) {
+                        e.preventDefault();
+                        const cleanVal = $('#formNovoEndereco').find('input#Cep').cleanVal();
+
+                        if (!cleanVal) {
+                            $('#formNovoEndereco').find('input#Cep').addClass('required');
+                        } else {
+                            $('#formNovoEndereco').find('input#Cep').removeClass('required');
+                            $.get(`https://viacep.com.br/ws/${cleanVal}/json/`, response => {
+                                const $formNovoEndereco = $('#formNovoEndereco');
+
+                                $formNovoEndereco.find('#Logradouro').val(response.logradouro);
+                                $formNovoEndereco.find('#Bairro').val(response.bairro);
+                                $formNovoEndereco.find('#Cidade').val(response.localidade);
+                                $formNovoEndereco.find('#Numero').focus();
+                            });
+                        }
+                    });
+                })
+            </script>
+        }
+    }
+    else
+    {
+        <h1>Fale conosco</h1>
+    }
+}
+
+<a class="btn btn-link" asp-controller="Home" asp-action="Hub">Voltar para página inicial</a>

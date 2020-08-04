@@ -26,8 +26,7 @@ namespace RecebaFacil.Service
         {
             try
             {
-                return await _repositoryEndereco.ObterPrimeiroPor(x => x.EmpresaId == empresaId && x.Ativo)
-                    .ConfigureAwait(false);
+                return await _repositoryEndereco.ObterPrimeiroPor(x => x.EmpresaId == empresaId && x.Ativo);
             }
             catch (Exception ex)
             {

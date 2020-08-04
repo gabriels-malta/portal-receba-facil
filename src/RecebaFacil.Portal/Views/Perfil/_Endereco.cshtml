@@ -75,6 +75,7 @@
 
 <div class="row">
     <div class="col-12 text-center">
-        <p>Entre em contato <a asp-route="Home_Suporte">conosco</a> para alterar o endereço cadastrado</p>
+        @{ var routeData = new Dictionary<string, string> { { "form", "ad8bace88e1844debdcae07839f4e2fd" } }; }
+        <p>Entre em contato <a asp-route="Home_Suporte" asp-all-route-data="routeData">conosco</a> para alterar o endereço cadastrado</p>
     </div>
 </div>

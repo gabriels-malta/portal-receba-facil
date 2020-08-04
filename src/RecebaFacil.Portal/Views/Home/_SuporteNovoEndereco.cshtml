@@ -1,0 +1,48 @@
+﻿@model RecebaFacil.Portal.Models.Home.SuporteNovoEnderecoViewModel
+
+<div class="row">
+    <div class="col">
+        <h1 class="fa-2x">Solicitar alteração de endereço</h1>
+
+        <form method="post" asp-controller="Home" asp-action="Suporte" asp-antiforgery="true" id="formNovoEndereco">
+            <div asp-validation-summary="ModelOnly"></div>
+
+            <div class="form-row">
+                <div class="col-4">
+                    <label asp-for="Cep">CEP</label>
+                    <a id="pesquisarCep" href="#">pesquisar</a>
+                    &nbsp;<span class="text-danger small ml-2" asp-validation-for="Cep"></span>
+                    <input type="text" class="form-control" asp-for="Cep" required />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-sm-10 col-md-10">
+                    <label asp-for="Logradouro">Logradouro</label>&nbsp;<span class="text-danger small ml-2" asp-validation-for="Logradouro"></span>
+                    <input type="text" asp-for="Logradouro" class="form-control" required />
+                </div>
+                <div class="col">
+                    <label asp-for="Numero">Número</label>
+                    <input type="text" asp-for="Numero" class="form-control" required />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-sm-12 col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Bairro">Bairro</label>&nbsp;<span class="text-danger small ml-2" asp-validation-for="Bairro"></span>
+                        <input asp-for="Bairro" type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Cidade">Município</label><span class="text-danger small ml-2" asp-validation-for="Cidade"></span>
+                        <select class="form-control" asp-for="Cidade" asp-items="Model.Municipios" required></select>
+                        <span class="small text-muted">Apenas estado São Paulo</span>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

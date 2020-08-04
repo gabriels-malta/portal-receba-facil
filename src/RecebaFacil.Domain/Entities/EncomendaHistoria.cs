@@ -21,9 +21,9 @@ namespace RecebaFacil.Domain.Entities
             return EncomendaId == other.EncomendaId && TipoMovimento == other.TipoMovimento;
         }
 
-        public void DefinirProximoMovimento(TipoMovimento movimentoAtual)
+        public static TipoMovimento DefinirProximoMovimento(TipoMovimento movimentoAtual)
         {
-            TipoMovimento = movimentoAtual switch
+            return movimentoAtual switch
             {
                 TipoMovimento.EsteiraIniciada => TipoMovimento.EnviadoPontoRetirada,
                 TipoMovimento.EnviadoPontoRetirada => TipoMovimento.RecebidoPontoRetirada,

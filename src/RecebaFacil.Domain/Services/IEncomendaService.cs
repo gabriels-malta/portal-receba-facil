@@ -15,5 +15,6 @@ namespace RecebaFacil.Domain.Services
         Task<IList<Encomenda>> ObterPorPontoDeRetirada(Guid pontoRetiradaId);
         Task MovimentarPorPontoVenda(Guid encomendaId, Guid pontoVendaId);
         Task AdicionarMovimento(Guid encomendaId, Guid empresaId, TipoMovimento movimento);
+        Task Despachar(Guid pontoVendaId, Guid encomendaId, int notaFiscal);
     }
 }

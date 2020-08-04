@@ -60,13 +60,6 @@ namespace RecebaFacil.Repository
             return await _context.Set<TEntity>().FirstOrDefaultAsync(expression, cancellationToken);
         }
 
-        public virtual async Task<IList<TEntity>> ObterTodos(CancellationToken cancellationToken = default)
-        {
-            return await _context.Set<TEntity>()
-                .AsNoTracking()
-                .ToListAsync(cancellationToken);
-        }
-
         public async Task<Guid> Salvar(TEntity entity)
         {
             await _context

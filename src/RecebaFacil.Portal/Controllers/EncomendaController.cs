@@ -119,9 +119,8 @@ namespace RecebaFacil.Portal.Controllers
                 {
                     Id = item.Id,
                     DataPedido = item.DataPedido,
-                    NotaFiscal = item.NotaFiscal,
                     NumeroPedido = item.NumeroPedido,
-                    TipoMovimento = item.Historia.Max(x => x.TipoMovimento).GetDescription(),
+                    TipoMovimento = item.ObterEstadoAtual().GetDescription(),
                     PontoVendaNome = nomePontoVenda,
                     PontoVendaId = item.PontoVendaId,
                     UrlEncomendaDetalhe = Url.RouteUrl("Encomenda_PontoRetirada_Detalhe", new
@@ -136,7 +135,7 @@ namespace RecebaFacil.Portal.Controllers
 
         [Authorize(Roles = Roles.PONTO_RETIRADA)]
         [Route("ponto-retirada/minhas-encomendas/{encomendaId}/detalhe", Name = "Encomenda_PontoRetirada_Detalhe")]
-        public async Task<IActionResult> MinhaEncomendasDetalhe(Guid encomendaId)
+        public async Task<IActionResult> MinhasEncomendasDetalhe(Guid encomendaId)
         {
             var encomenda = await _encomendaService.ObterPorId(encomendaId);
             string nomePontoVenda = await _empresaService.ObterNomeEmpresa(encomenda.PontoVendaId);
@@ -145,13 +144,12 @@ namespace RecebaFacil.Portal.Controllers
             {
                 Id = encomenda.Id,
                 DataPedido = encomenda.DataPedido,
-                NotaFiscal = encomenda.NotaFiscal,
+                NotaFiscal = encomenda.NotaFiscal ?? " - ",
                 NumeroPedido = encomenda.NumeroPedido,
                 PontoVendaNome = nomePontoVenda,
                 PontoVendaId = encomenda.PontoVendaId,
-                PermiteMovimentar = encomenda.PodeMovimentar(),
+                PermiteMovimentar = encomenda.PontoVendaPodeMovimentar(),
                 Movimentacao = encomenda.Historia?
-                                        .OrderByDescending(d => d.DataCadastro)
                                         .Select(x => new EncomendaHistoriaViewModel
                                         {
                                             EncomendaId = x.EncomendaId,
@@ -166,15 +164,18 @@ namespace RecebaFacil.Portal.Controllers
             return View("PontoRetiradaDetalhe", model);
         }
 
-
-        [Authorize(Roles = Roles.PONTO_RETIRADA)]
-        [Route("ponto-retirada/minhas-encomendas/{encomendaId}/movimentar")]
         [HttpPost]
-        public async Task<IActionResult> MovimentarEncomenda([FromRoute] Guid encomendaId,  string movimento)
+        [Authorize(Roles = Roles.PONTO_RETIRADA)]
+        [ValidateAntiForgeryToken]
+        [Route("ponto-retirada/minhas-encomendas/{encomendaId}/movimentar")]
+        public async Task<IActionResult> MovimentarEncomenda([FromRoute] Guid encomendaId, string movimento)
         {
             try
             {
-                await _encomendaService.AdicionarMovimento(encomendaId, _loggedUser.EmpresaId, Enum.Parse<TipoMovimento>(movimento));
+                if (!Enum.TryParse(movimento, out TipoMovimento tipoMovimento))
+                    return BadRequest("Invalid request");
+
+                await _encomendaService.AdicionarMovimento(encomendaId, _loggedUser.EmpresaId, tipoMovimento);
                 return Ok();
             }
             catch (Exception ex)

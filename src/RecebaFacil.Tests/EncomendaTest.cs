@@ -21,13 +21,7 @@ namespace RecebaFacil.Tests
                 NotaFiscal = "745230",
             };
 
-            encomenda.AdicionarHistoria(new EncomendaHistoria
-            {
-                DataCadastro = DateTime.Now,
-                Id = Guid.NewGuid(),
-                EncomendaId = encomenda.Id,
-                TipoMovimento = TipoMovimento.EsteiraIniciada
-            });
+            encomenda.CriarNovaHistoria(TipoMovimento.EsteiraIniciada);
 
             Assert.Equal(encomenda.Id, encomenda.Historia.ElementAt(0).EncomendaId);
         }
@@ -44,21 +38,11 @@ namespace RecebaFacil.Tests
                 NotaFiscal = "745230",
             };
 
-            encomenda.AdicionarHistoria(new EncomendaHistoria
-            {
-                DataCadastro = DateTime.Now,
-                Id = Guid.NewGuid(),
-                EncomendaId = encomenda.Id,
-                TipoMovimento = TipoMovimento.EsteiraIniciada
-            });
+            encomenda.CriarNovaHistoria(TipoMovimento.EsteiraIniciada);
 
             RecebaFacilException exception = Assert.Throws<RecebaFacilException>(() =>
             {
-                encomenda.AdicionarHistoria(new EncomendaHistoria
-                {
-                    EncomendaId = encomenda.Id,
-                    TipoMovimento = TipoMovimento.EsteiraIniciada
-                });
+                encomenda.CriarNovaHistoria(TipoMovimento.EsteiraIniciada);
             });
 
             Assert.Equal("Movimento não permitido para esta encomenda", exception.Message);
@@ -76,23 +60,9 @@ namespace RecebaFacil.Tests
                 NotaFiscal = "745230",
             };
 
-            encomenda.AdicionarHistoria(new EncomendaHistoria
-            {
-                EncomendaId = encomenda.Id,
-                TipoMovimento = TipoMovimento.EsteiraIniciada
-            });
-
-            encomenda.AdicionarHistoria(new EncomendaHistoria
-            {
-                EncomendaId = encomenda.Id,
-                TipoMovimento = TipoMovimento.EnviadoPontoRetirada
-            });
-
-            encomenda.AdicionarHistoria(new EncomendaHistoria
-            {
-                EncomendaId = encomenda.Id,
-                TipoMovimento = TipoMovimento.RecebidoPontoRetirada
-            });
+            encomenda.CriarNovaHistoria(TipoMovimento.EsteiraIniciada);
+            encomenda.CriarNovaHistoria(TipoMovimento.EnviadoPontoRetirada);
+            encomenda.CriarNovaHistoria(TipoMovimento.RecebidoPontoRetirada);
 
 
             Assert.True(encomenda.PodeMovimentar());
@@ -113,29 +83,11 @@ namespace RecebaFacil.Tests
                 NotaFiscal = "745230",
             };
 
-            encomenda.AdicionarHistoria(new EncomendaHistoria
-            {
-                EncomendaId = encomenda.Id,
-                TipoMovimento = TipoMovimento.EsteiraIniciada
-            });
+            encomenda.CriarNovaHistoria(TipoMovimento.EsteiraIniciada);
+            encomenda.CriarNovaHistoria(TipoMovimento.EnviadoPontoRetirada);
+            encomenda.CriarNovaHistoria(TipoMovimento.RecebidoPontoRetirada);
 
-            encomenda.AdicionarHistoria(new EncomendaHistoria
-            {
-                EncomendaId = encomenda.Id,
-                TipoMovimento = TipoMovimento.EnviadoPontoRetirada
-            });
-
-            encomenda.AdicionarHistoria(new EncomendaHistoria
-            {
-                EncomendaId = encomenda.Id,
-                TipoMovimento = TipoMovimento.RecebidoPontoRetirada
-            });
-
-            encomenda.AdicionarHistoria(new EncomendaHistoria
-            {
-                EncomendaId = encomenda.Id,
-                TipoMovimento = movimento
-            });
+            encomenda.CriarNovaHistoria(movimento);
 
 
             Assert.False(encomenda.PodeMovimentar());

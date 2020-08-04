@@ -3,11 +3,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using RecebaFacil.Domain;
+using RecebaFacil.Domain.Core.Model;
 using RecebaFacil.Domain.Entities;
 using RecebaFacil.Domain.Services;
+using RecebaFacil.Portal.Helpers;
 using RecebaFacil.Portal.Models;
 using RecebaFacil.Portal.Models.Home;
+using RecebaFacil.Portal.Services;
 using RecebaFacil.Portal.Services.Interfaces;
+using RecebaFacil.Portal.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -17,20 +21,31 @@ namespace RecebaFacil.Portal.Controllers
 {
     public class HomeController : BaseController
     {
+        private readonly SelectListItemHelper _selectListItemHelper;
         private readonly IPreRegistroService _PreRegistroService;
-        private readonly IMemoryCache _cache;
+        private readonly ICacheService _cacheService;
+        private readonly IIBGEMicrorregioesService _microrregioesService;
         public HomeController(IHttpContextService httpContextService,
                               IPreRegistroService preRegistroService,
-                              IMemoryCache cache)
+                              ICacheService cacheService,
+                              SelectListItemHelper selectListItemHelper,
+                              IIBGEMicrorregioesService microrregioesService)
             : base(httpContextService)
         {
             _PreRegistroService = preRegistroService;
-            _cache = cache;
+            _cacheService = cacheService;
+            _selectListItemHelper = selectListItemHelper;
+            _microrregioesService = microrregioesService;
         }
 
         [HttpGet("")]
         public IActionResult Index()
         {
+            if (_cacheService.TentarObter(CacheKeys.UsuarioLogado, out LoggedUser _))
+                return RedirectToAction("Hub");
+
+
+            // redireciona para página institucional
             return View();
         }
 
@@ -39,15 +54,13 @@ namespace RecebaFacil.Portal.Controllers
         {
             CadastrarViewModel model = new CadastrarViewModel();
 
-            if (!_cache.TryGetValue(CacheKeys.Microrregioes, out IEnumerable<IBGEMicrorregioes> microrregioes))
+            if (!_cacheService.TentarObter(CacheKeys.Microrregioes, out IEnumerable<Microrregioes> microrregioes))
             {
-                using HttpClient httpClient = new HttpClient();
-                var response = await httpClient.GetAsync("https://servicodados.ibge.gov.br/api/v1/localidades/estados/sp/municipios");
-                microrregioes = JsonConvert.DeserializeObject<IEnumerable<IBGEMicrorregioes>>(await response.Content.ReadAsStringAsync());
-                _ = _cache.Set(CacheKeys.Microrregioes, microrregioes, TimeSpan.FromDays(90));
+                microrregioes = await _microrregioesService.ObterTodos();
+                _ = _cacheService.CriarOuObter(CacheKeys.Microrregioes, microrregioes, TimeSpan.FromDays(90));
             }
 
-            model.MontarListaDeMunicipios(microrregioes);
+            model.Municipios = _selectListItemHelper.MontarListaDeMunicipios(microrregioes);
 
             return View(model);
         }
@@ -60,7 +73,7 @@ namespace RecebaFacil.Portal.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    model.MontarListaDeMunicipios(_cache.Get<IEnumerable<IBGEMicrorregioes>>(CacheKeys.Microrregioes));
+                    model.Municipios = _selectListItemHelper.MontarListaDeMunicipios(_cacheService.Obter<IEnumerable<Microrregioes>>(CacheKeys.Microrregioes));
                     return View(model);
                 }
 
@@ -83,7 +96,7 @@ namespace RecebaFacil.Portal.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
-                model.MontarListaDeMunicipios(_cache.Get<IEnumerable<IBGEMicrorregioes>>(CacheKeys.Microrregioes));
+                model.Municipios = _selectListItemHelper.MontarListaDeMunicipios(_cacheService.Obter<IEnumerable<Microrregioes>>(CacheKeys.Microrregioes));
                 return View(model);
             }
 
@@ -103,12 +116,36 @@ namespace RecebaFacil.Portal.Controllers
 
         [Authorize]
         [HttpGet("receba-facil/suporte", Name = "Home_Suporte")]
-        public IActionResult Suporte()
+        public async Task<IActionResult> Suporte([FromQuery] string form)
         {
-            return View();
+            SuporteViewModel model = new SuporteViewModel();
+            if ("ad8bace88e1844debdcae07839f4e2fd" == form)
+            {
+                if (!_cacheService.TentarObter(CacheKeys.Microrregioes, out IEnumerable<Microrregioes> microrregioes))
+                {
+                    microrregioes = await _microrregioesService.ObterTodos();
+                    _ = _cacheService.CriarOuObter(CacheKeys.Microrregioes, microrregioes, TimeSpan.FromDays(90));
+                }
+
+                if (_cacheService.TentarObter(CacheKeys.UsuarioLogado, out LoggedUser loggedUser))
+                {
+                    model.PartialViewName = "_SuporteNovoEndereco";
+                    model.NovoEnderecoViewModel = new SuporteNovoEnderecoViewModel
+                    {
+                        EmpresaId = loggedUser.EmpresaId,
+                        EmpresaNome = loggedUser.Empresa,
+                        Municipios = _selectListItemHelper.MontarListaDeMunicipios(microrregioes)
+                    };
+                }
+                else
+                    model.PartialViewName = null;
+            }
+
+            return View(model);
         }
 
         [Authorize]
+        [HttpGet("pagina-inicial")]
         public IActionResult Hub() => RedirectToRoute(_httpContextService.ObterRotaInicial());
         #endregion
     }
