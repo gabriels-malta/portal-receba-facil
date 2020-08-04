@@ -23,13 +23,13 @@ namespace RecebaFacil.Domain.Enums
         EsteiraFinalizada = 6,
 
 
-        [Description("Aguardando cliente final a 7 dias")]
+        [Description("Aguardando cliente final há 7 dias")]
         AguardandoClienteFinal7Dias = 50,
 
-        [Description("Aguardando cliente final a 14 dias")]
+        [Description("Aguardando cliente final há 14 dias")]
         AguardandoClienteFinal14Dias = 51,
 
-        [Description("Devoldido para Ponto de Venda")]
+        [Description("Devolvido para Ponto de Venda")]
         DevolvidoPontoVenda = 52,
 
 

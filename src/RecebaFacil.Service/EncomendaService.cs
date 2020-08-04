@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using RecebaFacil.Domain.Entities;
 using RecebaFacil.Domain.Enums;
 using RecebaFacil.Domain.Exception;
@@ -38,27 +37,13 @@ namespace RecebaFacil.Service
         {
             return await _repositoryEncomenda.ObterListaPor(x => x.PontoRetiradaId == pontoRetiradaId);
         }
-
         public async Task<Guid> Salvar(Encomenda encomenda)
         {
             try
             {
-                if (!await _empresaService.ExistePontoRetirada(encomenda.PontoRetiradaId))
-                    throw new RecebaFacilException("Ponto de Retirada inválido");
+                await ValidarNovaEncomenda(encomenda);
 
-                if (!await _empresaService.ExistePontoVenda(encomenda.PontoVendaId))
-                    throw new RecebaFacilException("Ponto de Venda inválido");
-
-                if (string.IsNullOrWhiteSpace(encomenda.NumeroPedido) || string.IsNullOrWhiteSpace(encomenda.NotaFiscal))
-                    throw new RecebaFacilException("Verifique os dados e tente novamente");
-
-                encomenda.AdicionarHistoria(new EncomendaHistoria
-                {
-                    Id = Guid.NewGuid(),
-                    EncomendaId = encomenda.Id,
-                    DataCadastro = DateTime.UtcNow,
-                    TipoMovimento = TipoMovimento.EsteiraIniciada
-                });
+                encomenda.CriarNovaHistoria(TipoMovimento.EsteiraIniciada);
 
                 return await _repositoryEncomenda.Salvar(encomenda);
             }
@@ -71,28 +56,76 @@ namespace RecebaFacil.Service
 
         public async Task MovimentarPorPontoVenda(Guid encomendaId, Guid pontoVendaId)
         {
-            if (!await _repositoryEncomenda.Existe(x => x.PontoVendaId == pontoVendaId))
-                throw new RecebaFacilException("Operação inválida para este ponto de venda");
+            var encomenda = await _repositoryEncomenda.ObterPorId(encomendaId);
 
-            IList<EncomendaHistoria> movimentos = await _repositoryHistoria.ObterListaPor(x => x.EncomendaId == encomendaId);
+            TipoMovimento proximaEtapa = EncomendaHistoria.DefinirProximoMovimento(encomenda.ObterEstadoAtual());
 
-            if (!movimentos.Any()) throw new RecebaFacilException("Encomenda não encontrada");
+            await ValidarMovimentacao(encomendaId, pontoVendaId, proximaEtapa, encomenda);
 
-            EncomendaHistoria historia = new EncomendaHistoria
-            {
-                Id = Guid.NewGuid(),
-                EncomendaId = encomendaId,
-                DataCadastro = DateTime.Now
-            };
-
-            historia.DefinirProximoMovimento(movimentoAtual: movimentos.ElementAt(0).TipoMovimento);
+            var historia = encomenda.CriarNovaHistoria(proximaEtapa);
 
             await _repositoryHistoria.Salvar(historia);
         }
-
         public async Task AdicionarMovimento(Guid encomendaId, Guid empresaId, TipoMovimento movimento)
         {
             var encomenda = await _repositoryEncomenda.ObterPorId(encomendaId);
+
+            await ValidarMovimentacao(encomendaId, empresaId, movimento, encomenda);
+
+            var historia = encomenda.CriarNovaHistoria(movimento);
+            await _repositoryHistoria.Salvar(historia);
+
+            if (TipoMovimento.RecebidoPontoRetirada == movimento)
+            {
+                var historiaAguardandoClienteFinal = encomenda.CriarNovaHistoria(TipoMovimento.AguardandoClienteFinal);
+                await _repositoryHistoria.Salvar(historiaAguardandoClienteFinal);
+            }
+
+            if (!encomenda.PodeMovimentar())
+            {
+                var historiaFinal = encomenda.CriarNovaHistoria(TipoMovimento.EsteiraFinalizada);
+                await _repositoryHistoria.Salvar(historiaFinal);
+            }
+
+        }
+        public async Task<Encomenda> ObterPorId(Guid id)
+        {
+            return await _repositoryEncomenda.ObterPorId(id);
+        }
+        public async Task Despachar(Guid pontoVendaId, Guid encomendaId, int notaFiscal)
+        {
+            var encomenda = await _repositoryEncomenda.ObterPorId(encomendaId);
+
+            await ValidarEnvioParaPontoDeRetirada(pontoVendaId, encomendaId, notaFiscal, encomenda);
+
+            encomenda.NotaFiscal = notaFiscal.ToString();
+            await _repositoryEncomenda.Atualizar(encomenda);
+
+            var historiaNF = encomenda.CriarNovaHistoria(TipoMovimento.NotaFiscalAlterada);
+            await _repositoryHistoria.Salvar(historiaNF);
+
+            var historiaEnviado = encomenda.CriarNovaHistoria(TipoMovimento.EnviadoPontoRetirada);
+            await _repositoryHistoria.Salvar(historiaEnviado);
+        }
+        private async Task ValidarNovaEncomenda(Encomenda encomenda)
+        {
+            if (!await _empresaService.ExistePontoRetirada(encomenda.PontoRetiradaId))
+                throw new RecebaFacilException("Ponto de Retirada inválido");
+
+            if (!await _empresaService.ExistePontoVenda(encomenda.PontoVendaId))
+                throw new RecebaFacilException("Ponto de Venda inválido");
+
+            if (DateTime.Now.CompareTo(encomenda.DataPedido) == 1)
+                throw new RecebaFacilException("Data do pedido inválida");
+
+            if (string.IsNullOrWhiteSpace(encomenda.NumeroPedido))
+                throw new RecebaFacilException("Número do pedido é obrigatório");
+
+            if (await _repositoryEncomenda.Existe(x => x.NumeroPedido == encomenda.NumeroPedido))
+                throw new RecebaFacilException($"Já existe uma encomenda com este número de pedido: {encomenda.NumeroPedido}");
+        }
+        private async Task ValidarMovimentacao(Guid encomendaId, Guid empresaId, TipoMovimento movimento, Encomenda encomenda)
+        {
             if (encomenda == null)
             {
                 _logger.LogWarning($"Data: ${DateTime.Now} | EncomendaId: ${encomendaId} | EmpresaId: ${empresaId}");
@@ -111,19 +144,24 @@ namespace RecebaFacil.Service
                 _logger.LogWarning($"Data: ${DateTime.Now} | EncomendaId: ${encomendaId} | EmpresaId: ${empresaId} | Movimento pretendido: ${movimento}");
                 throw new RecebaFacilException("Movimentação inválida");
             }
-
-            _ = await _repositoryHistoria.Salvar(new EncomendaHistoria
-            {
-                Id = Guid.NewGuid(),
-                DataCadastro = DateTime.Now,
-                EncomendaId = encomendaId,
-                TipoMovimento = movimento
-            });
         }
-        
-        public async Task<Encomenda> ObterPorId(Guid id)
+        private async Task ValidarEnvioParaPontoDeRetirada(Guid pontoVendaId, Guid encomendaId, int notaFiscal, Encomenda encomenda)
         {
-            return await _repositoryEncomenda.ObterPorId(id);
+            if (encomenda == null)
+            {
+                _logger.LogWarning($"Data: ${DateTime.Now} | EncomendaId: ${encomendaId} | EmpresaId: ${pontoVendaId}");
+                throw new RecebaFacilException("Encomenda não encontrada");
+            }
+            if (!new int[] { 1, 999_999_999 }.Contains(notaFiscal))
+            {
+                _logger.LogWarning($"Data: ${DateTime.Now} | EmpresaId: ${pontoVendaId} | Nota Fiscal inválida");
+                throw new RecebaFacilException("Númeração de nota fiscal inválida");
+            }
+            if (!await _empresaService.ExistePontoVenda(pontoVendaId))
+            {
+                _logger.LogWarning($"Data: ${DateTime.Now} | Empresa inválida (EmpresaId: ${pontoVendaId})");
+                throw new RecebaFacilException("Ação não permitida");
+            }
         }
     }
 }

@@ -13,11 +13,9 @@ namespace RecebaFacil.Repository
 {
     public class RepositoryEncomendaHistoria : RepositoryBase<EncomendaHistoria>, IRepositoryEncomendaHistoria
     {
-        public RepositoryEncomendaHistoria(RFContext context) : base(context)
-        {
-        }
-
-        public override Task<IList<EncomendaHistoria>> ObterTodos(CancellationToken cancellationToken = default) => throw new NotImplementedException();
+        public RepositoryEncomendaHistoria(RFContext context)
+            : base(context)
+        { }
 
         public override async Task<IList<EncomendaHistoria>> ObterListaPor(Expression<Func<EncomendaHistoria, bool>> expression, CancellationToken cancellationToken = default)
         {

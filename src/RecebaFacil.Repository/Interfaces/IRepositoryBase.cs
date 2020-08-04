@@ -18,8 +18,6 @@ namespace RecebaFacil.Repository.Interfaces
 
         ValueTask<TEntity> ObterPorId(Guid id, CancellationToken cancellationToken = default);
 
-        Task<IList<TEntity>> ObterTodos(CancellationToken cancellationToken = default);
-
         Task<TEntity> ObterPrimeiroPor(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken = default);
         Task<IList<TEntity>> ObterListaPor(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken = default);
 

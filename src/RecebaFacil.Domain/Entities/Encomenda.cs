@@ -17,18 +17,27 @@ namespace RecebaFacil.Domain.Entities
         public DateTime DataPedido { get; set; }
 
         private List<EncomendaHistoria> _historia = new List<EncomendaHistoria>();
-        public IReadOnlyList<EncomendaHistoria> Historia => _historia;
+        public IReadOnlyList<EncomendaHistoria> Historia => _historia.OrderByDescending(x => x.DataCadastro).ToList();
 
-        public void AdicionarHistoria(EncomendaHistoria historia)
+        public TipoMovimento ObterEstadoAtual() => Historia.ElementAt(0).TipoMovimento;
+        public EncomendaHistoria CriarNovaHistoria(TipoMovimento movimento)
         {
+            var historia = new EncomendaHistoria
+            {
+                Id = Guid.NewGuid(),
+                DataCadastro = DateTime.Now,
+                TipoMovimento = movimento,
+                EncomendaId = Id
+            };
+
             if (_historia.Any(x => x.Equals(historia)))
                 throw new RecebaFacilException("Movimento não permitido para esta encomenda");
 
             _historia.Add(historia);
+
+            return historia;
         }
-
         public bool PodeMovimentar() => !_historia.Select(x => x.TipoMovimento).Where(x => FimDaEsteira.Contains(x)).Any();
-
         public IEnumerable<TipoMovimento> ObterMovimentosPermitidos(TipoEmpresa tipoEmpresa)
         {
             switch (tipoEmpresa)
@@ -57,33 +66,29 @@ namespace RecebaFacil.Domain.Entities
                 default: break;
             }
         }
-
         private static TipoMovimento[] FimDaEsteira => new TipoMovimento[]
-        {
+{
             TipoMovimento.EsteiraFinalizada,
             TipoMovimento.DevolvidoPontoVenda,
             TipoMovimento.RetiradoClienteFinal
-        };
-
+};
         private static TipoMovimento[] NaoAtendePontoVenda => new TipoMovimento[]
-        {
+{
             TipoMovimento.DevolvidoPontoVenda,
-            TipoMovimento.EsteiraIniciada,
             TipoMovimento.EsteiraFinalizada,
             TipoMovimento.AguardandoClienteFinal,
             TipoMovimento.AguardandoClienteFinal7Dias,
             TipoMovimento.AguardandoClienteFinal14Dias,
             TipoMovimento.RetiradoClienteFinal,
             TipoMovimento.RecebidoPontoRetirada
-        };
-
+};
         private static TipoMovimento[] NaoAtendePontoRetirada => new TipoMovimento[]
-        {
+{
             TipoMovimento.EsteiraIniciada,
             TipoMovimento.EnviadoPontoRetirada,
             TipoMovimento.NotaFiscalAlterada,
             TipoMovimento.NumeroPedidoAlterado,
             TipoMovimento.EsteiraFinalizada
-        };
+};
     }
 }

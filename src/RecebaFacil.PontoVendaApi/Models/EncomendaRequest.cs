@@ -7,12 +7,10 @@ namespace RecebaFacil.WebApi.Models
     {
         public EncomendaRequest(Guid pontoRetiradaId,
                                 string numeroPedido,
-                                string notaFiscal,
                                 DateTime dataPedido)
         {
             PontoRetiradaId = pontoRetiradaId;
             NumeroPedido = numeroPedido;
-            NotaFiscal = notaFiscal;
             DataPedido = dataPedido;
         }
 
@@ -21,9 +19,6 @@ namespace RecebaFacil.WebApi.Models
 
         [Required]
         public string NumeroPedido { get; private set; }
-
-        [Required]
-        public string NotaFiscal { get; private set; }
 
         [Required]
         public DateTime DataPedido { get; private set; }

@@ -12,7 +12,7 @@ namespace RecebaFacil.WebApi.Controllers
 {
     [ApiController]
     [Produces("application/json")]
-    [Route("/api/ponto-venda/{empresaId}/encomendas")]
+    [Route("/api/ponto-venda/{empresaId:guid}/encomendas")]
     public class EncomendasController : ControllerBase
     {
         private readonly IEncomendaService _encomendaService;
@@ -27,36 +27,39 @@ namespace RecebaFacil.WebApi.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EncomendaResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Get([FromRoute] string empresaId)
+        public async Task<IActionResult> Get([FromRoute] Guid empresaId)
         {
-            if (Guid.TryParse(empresaId, out Guid guidId))
+            try
             {
-                var response = await _encomendaService.ObterPorPontoVenda(guidId);
-                return Ok(response.Select(e => new EncomendaResponse(e.Id,
-                                                                     e.DataPedido,
-                                                                     e.NumeroPedido,
-                                                                     e.NotaFiscal,
-                                                                     e.Historia?.Select(h => new EncomendaHistoriaResponse(h.DataCadastro, h.TipoMovimento.GetDescription()))
-                                                                     )
-                ));
+                var encomendas = await _encomendaService.ObterPorPontoVenda(empresaId);
+                var response = encomendas.Select(e => new EncomendaResponse(e.Id,
+                                                                      e.DataPedido,
+                                                                      e.NumeroPedido,
+                                                                      e.NotaFiscal,
+                                                                      e.Historia?.Select(h => new EncomendaHistoriaResponse(h.DataCadastro, h.TipoMovimento.GetDescription()))
+                                                                      )
+                );
+                return Ok(response);
             }
-
-            return BadRequest();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest("Erro ao obter encomendas");
+            }
         }
 
         [HttpGet("{encomendaId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EncomendaResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetById([FromRoute] string empresaId,
-                                                 [FromRoute] Guid encomendaId)
+        public async Task<IActionResult> GetById([FromRoute] Guid encomendaId)
         {
-            if (Guid.TryParse(empresaId, out Guid guidId))
+            try
             {
                 var response = await _encomendaService.ObterPorId(encomendaId);
                 if (response == null)
                 {
                     _logger.LogWarning($"Encomenda {encomendaId} nao encontrada");
-                    return BadRequest();
+                    return NotFound();
                 }
 
                 return Ok(new EncomendaResponse
@@ -68,26 +71,30 @@ namespace RecebaFacil.WebApi.Controllers
                     response.Historia?.Select(h => new EncomendaHistoriaResponse(h.DataCadastro, h.TipoMovimento.GetDescription()))
                 ));
             }
-            return BadRequest();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest("Erro ao obter encomendas");
+            }
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Post([FromRoute] string empresaId,
-                                              [FromBody] EncomendaRequest model)
+        public async Task<IActionResult> GravarNovoPost([FromRoute] Guid empresaId,
+                                                        [FromBody] EncomendaRequest model)
         {
             try
             {
                 var response = await _encomendaService.Salvar(new Domain.Entities.Encomenda
                 {
                     DataPedido = model.DataPedido,
-                    NotaFiscal = model.NotaFiscal,
+                    NotaFiscal = null,
                     NumeroPedido = model.NumeroPedido,
                     PontoRetiradaId = model.PontoRetiradaId,
-                    PontoVendaId = Guid.Parse(empresaId)
+                    PontoVendaId = empresaId
                 });
-                return CreatedAtAction(nameof(GetById), "PontoVendaEncomendas", new
+                return CreatedAtAction("GetById", "Encomendas", new
                 {
                     empresaId,
                     encomendaId = response
@@ -100,21 +107,40 @@ namespace RecebaFacil.WebApi.Controllers
             }
         }
 
-        [HttpPatch("{encomendaId:guid}/movimentar")]
+        [HttpPost("{encomendaId:guid}/movimentar")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Patch([FromRoute] string empresaId, [FromRoute] Guid encomendaId)
+        public async Task<IActionResult> MovimentarPost([FromRoute] Guid empresaId,
+                                                        [FromRoute] Guid encomendaId)
         {
             try
             {
-                await _encomendaService.MovimentarPorPontoVenda(encomendaId, Guid.Parse(empresaId));
-
+                await _encomendaService.MovimentarPorPontoVenda(encomendaId, empresaId);
                 return Ok();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 return BadRequest("Erro ao movimentar encomenda");
+            }
+        }
+
+        [HttpPatch("{encomendaId:guid}/despachar")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DespacharPatch([FromRoute] Guid empresaId,
+                                                        [FromRoute] Guid encomendaId,
+                                                        [FromBody] int notaFiscal)
+        {
+            try
+            {
+                await _encomendaService.Despachar(empresaId, encomendaId, notaFiscal);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest("Erro ao gravar nota fiscal");
             }
         }
     }

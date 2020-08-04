@@ -83,7 +83,7 @@
             $('#btnCancelarMovimento').on('click', function () { $formulario.addClass('d-none'); $ddlMovimentos.val(''); });
             window.prsuccessmovimentar = function () {
                 $formulario.prepend(`<div class="alert-success">Movimentação realizada com sucesso</div>`);
-                this.setTimeout(() => {
+                setTimeout(() => {
                     window.location.reload();
                 }, 2000);
             }
