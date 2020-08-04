@@ -119,9 +119,8 @@ namespace RecebaFacil.Portal.Controllers
                 {
                     Id = item.Id,
                     DataPedido = item.DataPedido,
-                    NotaFiscal = item.NotaFiscal,
                     NumeroPedido = item.NumeroPedido,
-                    TipoMovimento = item.Historia.Max(x => x.TipoMovimento).GetDescription(),
+                    TipoMovimento = item.ObterEstadoAtual().GetDescription(),
                     PontoVendaNome = nomePontoVenda,
                     PontoVendaId = item.PontoVendaId,
                     UrlEncomendaDetalhe = Url.RouteUrl("Encomenda_PontoRetirada_Detalhe", new
@@ -145,13 +144,12 @@ namespace RecebaFacil.Portal.Controllers
             {
                 Id = encomenda.Id,
                 DataPedido = encomenda.DataPedido,
-                NotaFiscal = encomenda.NotaFiscal,
+                NotaFiscal = encomenda.NotaFiscal ?? " - ",
                 NumeroPedido = encomenda.NumeroPedido,
                 PontoVendaNome = nomePontoVenda,
                 PontoVendaId = encomenda.PontoVendaId,
-                PermiteMovimentar = encomenda.PodeMovimentar(),
+                PermiteMovimentar = encomenda.PontoVendaPodeMovimentar(),
                 Movimentacao = encomenda.Historia?
-                                        .OrderByDescending(d => d.DataCadastro)
                                         .Select(x => new EncomendaHistoriaViewModel
                                         {
                                             EncomendaId = x.EncomendaId,

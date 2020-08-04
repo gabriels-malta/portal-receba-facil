@@ -27,11 +27,19 @@ namespace RecebaFacil.WebApi.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EncomendaResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get([FromRoute] Guid empresaId)
         {
             try
             {
                 var encomendas = await _encomendaService.ObterPorPontoVenda(empresaId);
+
+                if (!encomendas.Any())
+                {
+                    _logger.LogWarning($"Sem encomendas cadastradas para o Ponto de Retirada Id: ${empresaId}");
+                    return NotFound();
+                }
+
                 var response = encomendas.Select(e => new EncomendaResponse(e.Id,
                                                                       e.DataPedido,
                                                                       e.NumeroPedido,
@@ -51,6 +59,7 @@ namespace RecebaFacil.WebApi.Controllers
         [HttpGet("{encomendaId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EncomendaResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById([FromRoute] Guid encomendaId)
         {
             try
@@ -73,8 +82,7 @@ namespace RecebaFacil.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                return BadRequest("Erro ao obter encomendas");
+                return BadRequest(ex.Message);
             }
         }
 
@@ -102,8 +110,7 @@ namespace RecebaFacil.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                return BadRequest("Erro ao registrar nova encomenda");
+                return BadRequest(ex.Message);
             }
         }
 
@@ -120,8 +127,7 @@ namespace RecebaFacil.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                return BadRequest("Erro ao movimentar encomenda");
+                return BadRequest(ex.Message);
             }
         }
 
@@ -139,8 +145,7 @@ namespace RecebaFacil.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                return BadRequest("Erro ao gravar nota fiscal");
+                return BadRequest(ex.Message);
             }
         }
     }

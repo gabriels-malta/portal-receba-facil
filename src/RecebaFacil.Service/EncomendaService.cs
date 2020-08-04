@@ -53,7 +53,6 @@ namespace RecebaFacil.Service
                 throw new RecebaFacilException("Erro ao cadastrar nova encomenda");
             }
         }
-
         public async Task MovimentarPorPontoVenda(Guid encomendaId, Guid pontoVendaId)
         {
             var encomenda = await _repositoryEncomenda.ObterPorId(encomendaId);
@@ -107,6 +106,7 @@ namespace RecebaFacil.Service
             var historiaEnviado = encomenda.CriarNovaHistoria(TipoMovimento.EnviadoPontoRetirada);
             await _repositoryHistoria.Salvar(historiaEnviado);
         }
+
         private async Task ValidarNovaEncomenda(Encomenda encomenda)
         {
             if (!await _empresaService.ExistePontoRetirada(encomenda.PontoRetiradaId))
@@ -115,7 +115,7 @@ namespace RecebaFacil.Service
             if (!await _empresaService.ExistePontoVenda(encomenda.PontoVendaId))
                 throw new RecebaFacilException("Ponto de Venda inválido");
 
-            if (DateTime.Now.CompareTo(encomenda.DataPedido) == 1)
+            if (DateTime.Now.CompareTo(encomenda.DataPedido) < 0)
                 throw new RecebaFacilException("Data do pedido inválida");
 
             if (string.IsNullOrWhiteSpace(encomenda.NumeroPedido))
@@ -152,7 +152,7 @@ namespace RecebaFacil.Service
                 _logger.LogWarning($"Data: ${DateTime.Now} | EncomendaId: ${encomendaId} | EmpresaId: ${pontoVendaId}");
                 throw new RecebaFacilException("Encomenda não encontrada");
             }
-            if (!new int[] { 1, 999_999_999 }.Contains(notaFiscal))
+            if (notaFiscal <= 0 || notaFiscal > 999_999_999)
             {
                 _logger.LogWarning($"Data: ${DateTime.Now} | EmpresaId: ${pontoVendaId} | Nota Fiscal inválida");
                 throw new RecebaFacilException("Númeração de nota fiscal inválida");

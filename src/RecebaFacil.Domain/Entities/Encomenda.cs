@@ -38,6 +38,8 @@ namespace RecebaFacil.Domain.Entities
             return historia;
         }
         public bool PodeMovimentar() => !_historia.Select(x => x.TipoMovimento).Where(x => FimDaEsteira.Contains(x)).Any();
+
+        public bool PontoVendaPodeMovimentar() => PermitePontoRetiradaMovimentar.Contains(ObterEstadoAtual());
         public IEnumerable<TipoMovimento> ObterMovimentosPermitidos(TipoEmpresa tipoEmpresa)
         {
             switch (tipoEmpresa)
@@ -90,5 +92,13 @@ namespace RecebaFacil.Domain.Entities
             TipoMovimento.NumeroPedidoAlterado,
             TipoMovimento.EsteiraFinalizada
 };
+
+        private static TipoMovimento[] PermitePontoRetiradaMovimentar => new TipoMovimento[]
+        {
+            TipoMovimento.EnviadoPontoRetirada,
+            TipoMovimento.AguardandoClienteFinal,
+            TipoMovimento.AguardandoClienteFinal7Dias,
+            TipoMovimento.AguardandoClienteFinal14Dias
+        };
     }
 }

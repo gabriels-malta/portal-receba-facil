@@ -29,13 +29,18 @@
 
             <div class="form-row">
                 <div class="col-sm-12 col-md-6">
-                    <label asp-for="Bairro">Bairro</label>&nbsp;<span class="text-danger small ml-2" asp-validation-for="Bairro"></span>
-                    <input asp-for="Bairro" type="text" class="form-control" />
+                    <div class="form-group">
+                        <label asp-for="Bairro">Bairro</label>&nbsp;<span class="text-danger small ml-2" asp-validation-for="Bairro"></span>
+                        <input asp-for="Bairro" type="text" class="form-control" />
+                    </div>
                 </div>
                 <div class="col-sm-12 col-md-6">
-                    <label>Município</label>&nbsp;<span class="text-danger small ml-2" asp-validation-for="Cidade"></span>
-                    <select asp-for="Cidade" asp-items="Model.Municipios" class="form-control" required></select>
-                    <span class="small text-muted">Apenas estado São Paulo</span>
+                    <div class="form-group">
+                        <label asp-for="Cidade">Município</label><span class="text-danger small ml-2" asp-validation-for="Cidade"></span>
+                        <select class="form-control" asp-for="Cidade" asp-items="Model.Municipios" required></select>
+                        <span class="small text-muted">Apenas estado São Paulo</span>
+
+                    </div>
                 </div>
             </div>
         </form>
