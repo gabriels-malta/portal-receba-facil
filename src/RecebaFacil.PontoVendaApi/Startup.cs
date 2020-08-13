@@ -45,7 +45,7 @@ namespace RecebaFacil.WebApi
                     Description = swaggerConfig.Description,
                     Contact = new OpenApiContact
                     {
-                        Email = "",
+                        Email = swaggerConfig.ContactEmail,
                         Name = swaggerConfig.ContactName,
                         Url = new Uri(swaggerConfig.ContactUrl)
                     }
@@ -89,5 +89,6 @@ namespace RecebaFacil.WebApi
         public string Description { get; set; }
         public string ContactName { get; set; }
         public string ContactUrl { get; set; }
+        public string ContactEmail { get; set; }
     }
 }
