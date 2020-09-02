@@ -9,7 +9,7 @@ env:
   AZURE_WEBAPP_NAME: nonprod-recebafacil
   AZURE_WEBAPP_PACKAGE_PATH: './dist'
   DOTNET_VERSION: '3.1.101'
-  DIIR_PORTAL: ./src/RecebaFacil.Portal
+  DIR_PORTAL: ./src/RecebaFacil.Portal
   DIR_TEST: ./src/RecebaFacil.Tests
 
 jobs:
