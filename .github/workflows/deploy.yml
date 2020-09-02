@@ -21,28 +21,28 @@ jobs:
       - uses: actions/checkout@master
       
       # Setup .NET Core SDK
-      - name: Setup .NET Core
+      - name: Setup all the things
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }} 
       
       # Run dotnet build and publish
-      - name: dotnet build and publish
+      - name: Build_n_Publish
         run: |
           dotnet restore RecebaFacil.Portal.csproj
           dotnet build RecebaFacil.Portal.csproj --configuration Release          
           dotnet publish RecebaFacil.Portal.csproj -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/Portal' 
         working-directory: ${{env.DIR_PORTAL}}
-      - name: Test
+      
+      # Run Visual Studio Tests
+      - name: Unit_Tests
         run: dotnet test RecebaFacil.Tests.csproj --verbosity minimal
-        working-directory: ${{env.dir_tests}}
+        working-directory: ${{env.DIR_TEST}}
           
       # Deploy to Azure Web apps
-      - name: 'Run Azure webapp deploy action using publish profile credentials'
+      - name: Deploy_to_Azure
         uses: azure/webapps-deploy@v2
         with: 
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE  }}
           package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/Portal'
-
-# For more samples to get started with GitHub Action workflows to deploy to Azure, refer to https://github.com/Azure/actions-workflow-samples
