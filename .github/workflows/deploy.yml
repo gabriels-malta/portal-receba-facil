@@ -7,7 +7,7 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: nonprod-recebafacil
-  AZURE_WEBAPP_PACKAGE_PATH: './dist'
+  AZURE_WEBAPP_PACKAGE_PATH: '.'
   DOTNET_VERSION: '3.1.101'
   DIR_PORTAL: ./src/RecebaFacil.Portal
   DIR_TEST: ./src/RecebaFacil.Tests
@@ -32,12 +32,12 @@ jobs:
           dotnet restore RecebaFacil.Portal.csproj
           dotnet build RecebaFacil.Portal.csproj --configuration Release          
           dotnet publish RecebaFacil.Portal.csproj -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/Portal' 
-        working-directory: ${{env.DIR_PORTAL}}
+        working-directory: ${{ env.DIR_PORTAL }}
       
       # Run Visual Studio Tests
       - name: Unit_Tests
         run: dotnet test RecebaFacil.Tests.csproj --verbosity minimal
-        working-directory: ${{env.DIR_TEST}}
+        working-directory: ${{ env.DIR_TEST }}
           
       # Deploy to Azure Web apps
       - name: Deploy_to_Azure
