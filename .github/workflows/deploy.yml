@@ -1,0 +1,48 @@
+name: Deploy to Azure Web App
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  AZURE_WEBAPP_NAME: nonprod-recebafacil
+  AZURE_WEBAPP_PACKAGE_PATH: './dist'
+  DOTNET_VERSION: '3.1.101'
+  DIIR_PORTAL: ./src/RecebaFacil.Portal
+  DIR_TEST: ./src/RecebaFacil.Tests
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+      # Checkout the repo
+      - uses: actions/checkout@master
+      
+      # Setup .NET Core SDK
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }} 
+      
+      # Run dotnet build and publish
+      - name: dotnet build and publish
+        run: |
+          dotnet restore
+          dotnet build RecebaFacil.Portal.csproj --configuration Release          
+          dotnet publish RecebaFacil.Portal.csproj -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/Portal' 
+        working-directory: ${{env.DIR_PORTAL}}
+      - name: Test
+        run: dotnet test RecebaFacil.Tests.csproj --verbosity minimal
+        working-directory: ${{env.dir_tests}}
+          
+      # Deploy to Azure Web apps
+      - name: 'Run Azure webapp deploy action using publish profile credentials'
+        uses: azure/webapps-deploy@v2
+        with: 
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE  }}
+          package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/Portal'
+
+# For more samples to get started with GitHub Action workflows to deploy to Azure, refer to https://github.com/Azure/actions-workflow-samples
