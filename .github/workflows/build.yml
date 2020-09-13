@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
         with:
@@ -35,15 +35,15 @@ jobs:
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
       - name: Build and analyze
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"gabriels-malta_portal-receba-facil" /o:"gabriels-malta" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"          
       - name: Build
         run: dotnet build RecebaFacil.Portal.csproj --configuration Release
-        working-directory: ${{env.dir_portal}}
+        working-directory: .\src\RecebaFacil.Portal
       - name: Test
         run: dotnet test RecebaFacil.Tests.csproj --verbosity minimal
-        working-directory: ${{env.dir_tests}}
+        working-directory: .\src\RecebaFacil.Tests
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
