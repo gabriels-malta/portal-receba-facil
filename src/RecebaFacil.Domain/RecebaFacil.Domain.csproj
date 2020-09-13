@@ -2,12 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <CodeAnalysisRuleSet>..\.sonarlint\sonar.portal.recebafacilcsharp.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="DataServices\**" />
     <EmbeddedResource Remove="DataServices\**" />
     <None Remove="DataServices\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\.sonarlint\sonar.portal.recebafacil\CSharp\SonarLint.xml" Link="SonarLint.xml" />
   </ItemGroup>
 
 </Project>

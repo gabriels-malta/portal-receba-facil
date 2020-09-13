@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <ApplicationIcon>wwwroot\favicon.ico</ApplicationIcon>
+    <CodeAnalysisRuleSet>..\.sonarlint\sonar.portal.recebafacilcsharp.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +15,10 @@
     <Content Remove="Views\Auth\_PreRegisterModal.cshtml" />
     <Content Remove="Views\Home\base.cshtml" />
     <Content Remove="Views\Shared\_Header.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\.sonarlint\sonar.portal.recebafacil\CSharp\SonarLint.xml" Link="SonarLint.xml" />
   </ItemGroup>
 
   <ItemGroup>

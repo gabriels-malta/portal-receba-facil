@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <CodeAnalysisRuleSet>..\.sonarlint\sonar.portal.recebafacilcsharp.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +15,10 @@
     <Compile Remove="Installers\SeedInstallers.cs" />
     <Compile Remove="ISeedService.cs" />
     <Compile Remove="SeedHostedService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\.sonarlint\sonar.portal.recebafacil\CSharp\SonarLint.xml" Link="SonarLint.xml" />
   </ItemGroup>
 
   <ItemGroup>
