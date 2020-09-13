@@ -1,4 +1,4 @@
-name: CI Master
+name: SonarCloud CI
 on:
   push:
     branches:
@@ -41,9 +41,7 @@ jobs:
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"gabriels-malta_portal-receba-facil" /o:"gabriels-malta" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"          
       - name: Build
-        run: dotnet build RecebaFacil.Portal.csproj --configuration Release
-        working-directory: .\src\RecebaFacil.Portal
+        run: dotnet build .\src\RecebaFacil.Portal\RecebaFacil.Portal.csproj --configuration Release
       - name: Test
-        run: dotnet test RecebaFacil.Tests.csproj --verbosity minimal
-        working-directory: .\src\RecebaFacil.Tests
+        run: dotnet test .\src\RecebaFacil.Tests\RecebaFacil.Tests.csproj --verbosity minimal
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
