@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <ApplicationIcon>wwwroot\favicon.ico</ApplicationIcon>
     <CodeAnalysisRuleSet>..\.sonarlint\sonar.portal.recebafacilcsharp.ruleset</CodeAnalysisRuleSet>
+    <ProjectGuid>{481CBF66-F597-46A0-A981-0FAA1DD95776}</ProjectGuid>
   </PropertyGroup>
 
   <ItemGroup>

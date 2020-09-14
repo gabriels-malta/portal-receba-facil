@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <CodeAnalysisRuleSet>..\.sonarlint\sonar.portal.recebafacilcsharp.ruleset</CodeAnalysisRuleSet>
+    <ProjectGuid>{4C43EFBA-E94D-45A4-AB0D-231A36ED06C3}</ProjectGuid>
   </PropertyGroup>
 
   <ItemGroup>
