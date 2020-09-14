@@ -40,5 +40,5 @@ jobs:
         shell: powershell
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"gabriels-malta_portal-receba-facil" /o:"gabriels-malta" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"                
-          dotnet build .\src\RecebaFacil.Portal\RecebaFacil.Portal.csproj -c Release
+          dotnet build .\src\RecebaFacil.Portal\RecebaFacil.Portal.csproj
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
