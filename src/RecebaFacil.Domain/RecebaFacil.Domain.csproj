@@ -1,8 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <CodeAnalysisRuleSet>..\.sonarlint\sonar.portal.recebafacilcsharp.ruleset</CodeAnalysisRuleSet>
     <ProjectGuid>{4C43EFBA-E94D-45A4-AB0D-231A36ED06C3}</ProjectGuid>
   </PropertyGroup>
 
@@ -10,10 +9,6 @@
     <Compile Remove="DataServices\**" />
     <EmbeddedResource Remove="DataServices\**" />
     <None Remove="DataServices\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="..\.sonarlint\sonar.portal.recebafacil\CSharp\SonarLint.xml" Link="SonarLint.xml" />
   </ItemGroup>
 
 </Project>
