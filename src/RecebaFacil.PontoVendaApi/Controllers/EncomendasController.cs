@@ -44,7 +44,7 @@ namespace RecebaFacil.WebApi.Controllers
                                                                       e.DataPedido,
                                                                       e.NumeroPedido,
                                                                       e.NotaFiscal,
-                                                                      e.Historia?.Select(h => new EncomendaHistoriaResponse(h.DataCadastro, h.TipoMovimento.GetDescription()))
+                                                                      e.GetHistoria()?.Select(h => new EncomendaHistoriaResponse(h.DataCadastro, h.TipoMovimento.GetDescription()))
                                                                       )
                 );
                 return Ok(response);
@@ -77,7 +77,7 @@ namespace RecebaFacil.WebApi.Controllers
                     response.DataPedido,
                     response.NumeroPedido,
                     response.NotaFiscal,
-                    response.Historia?.Select(h => new EncomendaHistoriaResponse(h.DataCadastro, h.TipoMovimento.GetDescription()))
+                    response.GetHistoria()?.Select(h => new EncomendaHistoriaResponse(h.DataCadastro, h.TipoMovimento.GetDescription()))
                 ));
             }
             catch (Exception ex)

@@ -52,7 +52,7 @@ namespace RecebaFacil.Portal.Controllers
                     NumeroPedido = item.NumeroPedido,
                     PontoRetiradaId = item.PontoRetiradaId,
                     PontoVendaId = item.PontoVendaId,
-                    TipoMovimento = item.Historia.Max(x => x.TipoMovimento).GetDescription(),
+                    TipoMovimento = item.GetHistoria().Max(x => x.TipoMovimento).GetDescription(),
                     PontoRetiradaNome = nomePontoRetirada
                 });
             }
@@ -149,7 +149,7 @@ namespace RecebaFacil.Portal.Controllers
                 PontoVendaNome = nomePontoVenda,
                 PontoVendaId = encomenda.PontoVendaId,
                 PermiteMovimentar = encomenda.PontoVendaPodeMovimentar(),
-                Movimentacao = encomenda.Historia?
+                Movimentacao = encomenda.GetHistoria()?
                                         .Select(x => new EncomendaHistoriaViewModel
                                         {
                                             EncomendaId = x.EncomendaId,

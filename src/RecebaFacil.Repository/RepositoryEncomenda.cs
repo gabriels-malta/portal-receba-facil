@@ -21,13 +21,13 @@ namespace RecebaFacil.Repository
         public override async ValueTask<Encomenda> ObterPorId(Guid id, CancellationToken cancellationToken = default)
         {
             return await _context.Encomenda
-                .Include(x => x.Historia)
+                .Include(x => x.GetHistoria())
                 .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
         }
         public override async Task<IList<Encomenda>> ObterListaPor(Expression<Func<Encomenda, bool>> expression, CancellationToken cancellationToken = default)
         {
             return await _context.Set<Encomenda>()
-                .Include(x => x.Historia)
+                .Include(x => x.GetHistoria())
                 .Where(expression)
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);

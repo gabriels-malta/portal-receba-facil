@@ -23,7 +23,7 @@ namespace RecebaFacil.Tests
 
             encomenda.CriarNovaHistoria(TipoMovimento.EsteiraIniciada);
 
-            Assert.Equal(encomenda.Id, encomenda.Historia.ElementAt(0).EncomendaId);
+            Assert.Equal(encomenda.Id, encomenda.GetHistoria().ElementAt(0).EncomendaId);
         }
 
         [Fact]

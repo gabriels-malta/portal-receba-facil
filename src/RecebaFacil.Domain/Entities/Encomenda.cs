@@ -16,10 +16,14 @@ namespace RecebaFacil.Domain.Entities
         public string NumeroPedido { get; set; }
         public DateTime DataPedido { get; set; }
 
-        private List<EncomendaHistoria> _historia = new List<EncomendaHistoria>();
-        public IReadOnlyList<EncomendaHistoria> Historia => _historia.OrderByDescending(x => x.DataCadastro).ToList();
+        private readonly List<EncomendaHistoria> _historia = new List<EncomendaHistoria>();
 
-        public TipoMovimento ObterEstadoAtual() => Historia.ElementAt(0).TipoMovimento;
+        public IReadOnlyList<EncomendaHistoria> GetHistoria()
+        {
+            return _historia.OrderByDescending(x => x.DataCadastro).ToList();
+        }
+
+        public TipoMovimento ObterEstadoAtual() => GetHistoria().ElementAt(0).TipoMovimento;
         public EncomendaHistoria CriarNovaHistoria(TipoMovimento movimento)
         {
             var historia = new EncomendaHistoria
@@ -37,7 +41,7 @@ namespace RecebaFacil.Domain.Entities
 
             return historia;
         }
-        public bool PodeMovimentar() => !_historia.Select(x => x.TipoMovimento).Where(x => FimDaEsteira.Contains(x)).Any();
+        public bool PodeMovimentar() => !_historia.Select(x => x.TipoMovimento).Any(x => FimDaEsteira.Contains(x));
 
         public bool PontoVendaPodeMovimentar() => PermitePontoRetiradaMovimentar.Contains(ObterEstadoAtual());
         public IEnumerable<TipoMovimento> ObterMovimentosPermitidos(TipoEmpresa tipoEmpresa)
