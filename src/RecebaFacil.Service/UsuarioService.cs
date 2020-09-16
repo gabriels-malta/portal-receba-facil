@@ -13,20 +13,14 @@ namespace RecebaFacil.Service
         private readonly IRepositoryUsuario _repositoryUsuario;
         private readonly ILogger<IUsuarioService> _logger;
         private readonly ISecurityService _securityService;
-        private readonly IGrupoService _grupoService;
-        private readonly IEmpresaService _empresaService;
 
         public UsuarioService(IRepositoryUsuario repositoryUSuario,
                               ILogger<IUsuarioService> logger,
-                              ISecurityService securityService,
-                              IGrupoService grupoService, 
-                              IEmpresaService empresaService)
+                              ISecurityService securityService)
         {
             _repositoryUsuario = repositoryUSuario;
             _logger = logger;
             _securityService = securityService;
-            _grupoService = grupoService;
-            _empresaService = empresaService;
         }
 
         public async Task<Usuario> ObterPorId(Guid id)

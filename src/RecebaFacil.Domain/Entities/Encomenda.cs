@@ -51,21 +51,15 @@ namespace RecebaFacil.Domain.Entities
                 case TipoEmpresa.PontoVenda:
                     foreach (TipoMovimento item in Enum.GetValues(typeof(TipoMovimento)))
                     {
-                        if (!NaoAtendePontoVenda.Contains(item))
-                        {
-                            if (!_historia.Select(x => x.TipoMovimento).Contains(item))
-                                yield return item;
-                        }
+                        if (!NaoAtendePontoVenda.Contains(item) && !_historia.Select(x => x.TipoMovimento).Contains(item))
+                            yield return item;
                     }
                     break;
                 case TipoEmpresa.PontoRetirada:
                     foreach (TipoMovimento item in Enum.GetValues(typeof(TipoMovimento)))
                     {
-                        if (!NaoAtendePontoRetirada.Contains(item))
-                        {
-                            if (!_historia.Select(x => x.TipoMovimento).Contains(item))
-                                yield return item;
-                        }
+                        if (!NaoAtendePontoRetirada.Contains(item) && !_historia.Select(x => x.TipoMovimento).Contains(item))
+                            yield return item;
                     }
                     break;
                 case TipoEmpresa.SemDados:
